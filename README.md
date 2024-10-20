@@ -1,4 +1,4 @@
-# Starter folder
+# Forecasting the 2024 US Election
 
 ## Overview
 
