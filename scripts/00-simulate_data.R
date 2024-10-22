@@ -9,6 +9,7 @@
 
 
 #### Setting Up the Workspace ####
+
 library(tidyverse)
 
 #### Simulating the Data ####
