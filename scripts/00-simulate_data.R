@@ -14,12 +14,13 @@ library(tidyverse)
 
 #### Simulating the Data ####
 
-set.seed(420)
+set.seed(919)
 
 # Want to generate a table that shows high-quality pollsters with a numeric grade greater than or 
 # equal to 2.7 and whether each pollster was national or state-specific. 
-# Want the table to also outline the date in which the poll data was created and the percentage of 
-# votes or support for the candidate, Harris.
+# Want the table to also outline the date in which the poll data was created, the population of voters
+# (e.g. likey voters or registered ones), whether the poll was a hypothetical match-up, and the percentage 
+# of votes or support for the candidate, Harris.
 
 # Define table parameters (i.e. the columns of the table)
 
@@ -32,6 +33,10 @@ national_or_state = c("National", "Pennsylvania", "Minnesota", "Wisconsin", "Ari
                       "Georgia", "Michigan")
 
 candidate = c("Kamala Harris")
+
+population_voters = c("Likely Voters", "Registered Voters")
+
+hypothetical = c("False", "True")
 
 ## Setting start and end dates to simulate the date in which the poll data was created
 
@@ -53,8 +58,10 @@ simulated_data <-
     pollsters = sample(high_quality_pollsters, num_obs, replace = TRUE),
     numeric_grade = sample(pollster_numeric_grade, num_obs, replace = TRUE),
     scope_of_poll = sample(national_or_state, num_obs, replace = TRUE),
+    population = sample(population_voters, num_obs, replace = TRUE),
     data_created = sample(seq(from = start_date, to = end_date, by = "day"), 
                           num_obs, replace = TRUE),
+    hypothetical_match_up = sample(hypothetical, num_obs, replace = TRUE),
     candidate_name = sample(candidate, num_obs, replace = TRUE),
     percentage_of_vote = sample(pct_votes, num_obs))
 

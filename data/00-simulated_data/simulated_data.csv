@@ -1,51 +1,51 @@
-pollsters,numeric_grade,scope_of_poll,data_created,candidate_name,percentage_of_vote
-SurveyUSA,2.8,National,2024-10-01,Kamala Harris,54.1
-Siena,2.9,Wisconsin,2024-08-14,Kamala Harris,59.4
-Beacon/Shaw,2.8,Nevada,2024-08-16,Kamala Harris,50.1
-SurveyUSA,2.7,Arizona,2024-10-16,Kamala Harris,40
-AtlasIntel,2.9,Georgia,2024-09-15,Kamala Harris,52
-Suffolk,2.9,Georgia,2024-08-13,Kamala Harris,49.7
-Marquette Law School,2.9,Arizona,2024-07-26,Kamala Harris,56.8
-Siena,2.7,National,2024-10-03,Kamala Harris,44.4
-Suffolk,2.9,Wisconsin,2024-09-15,Kamala Harris,43.5
-Marquette Law School,3,Minnesota,2024-09-01,Kamala Harris,49.6
-Marquette Law School,2.8,Minnesota,2024-08-11,Kamala Harris,57.5
-Siena,2.7,Minnesota,2024-09-17,Kamala Harris,47.6
-SurveyUSA,2.7,Wisconsin,2024-08-21,Kamala Harris,54.7
-Suffolk,3,National,2024-08-25,Kamala Harris,49.3
-SurveyUSA,2.9,Michigan,2024-10-07,Kamala Harris,54.9
-Marquette Law School,2.7,Pennsylvania,2024-10-21,Kamala Harris,47.3
-AtlasIntel,2.8,Pennsylvania,2024-10-14,Kamala Harris,43.9
-Marquette Law School,2.7,National,2024-08-02,Kamala Harris,43.3
-AtlasIntel,2.7,Michigan,2024-08-10,Kamala Harris,51.7
-SurveyUSA,2.8,Michigan,2024-08-12,Kamala Harris,57.6
-Marquette Law School,3,Georgia,2024-10-13,Kamala Harris,50.9
-AtlasIntel,2.9,National,2024-08-02,Kamala Harris,54.2
-Suffolk,3,Georgia,2024-08-14,Kamala Harris,47.1
-AtlasIntel,2.7,Michigan,2024-07-28,Kamala Harris,56.1
-Suffolk,3,Wisconsin,2024-10-04,Kamala Harris,46.7
-Marquette Law School,2.8,Pennsylvania,2024-10-08,Kamala Harris,46.3
-SurveyUSA,2.8,Minnesota,2024-08-15,Kamala Harris,46.5
-Suffolk,3,Minnesota,2024-08-07,Kamala Harris,47.6
-Suffolk,2.8,Nevada,2024-10-03,Kamala Harris,58.1
-SurveyUSA,2.7,Nevada,2024-10-17,Kamala Harris,54.3
-Siena,3,Pennsylvania,2024-09-28,Kamala Harris,50.6
-AtlasIntel,2.9,Georgia,2024-10-13,Kamala Harris,50.5
-Beacon/Shaw,2.9,Wisconsin,2024-10-03,Kamala Harris,40.6
-SurveyUSA,2.8,National,2024-09-15,Kamala Harris,53.8
-Marquette Law School,2.9,Arizona,2024-08-26,Kamala Harris,43.5
-Beacon/Shaw,2.9,Minnesota,2024-07-30,Kamala Harris,46.1
-SurveyUSA,2.9,Wisconsin,2024-08-08,Kamala Harris,58.3
-Marquette Law School,2.8,Georgia,2024-10-10,Kamala Harris,43.6
-Beacon/Shaw,3,Michigan,2024-10-03,Kamala Harris,48.3
-Marquette Law School,2.8,Wisconsin,2024-08-25,Kamala Harris,45.8
-Suffolk,2.8,National,2024-09-26,Kamala Harris,47.7
-AtlasIntel,2.8,Nevada,2024-08-22,Kamala Harris,51.1
-Suffolk,2.9,Georgia,2024-10-17,Kamala Harris,44.7
-Beacon/Shaw,2.7,National,2024-10-05,Kamala Harris,54.5
-Marquette Law School,2.8,Michigan,2024-08-30,Kamala Harris,52.8
-Marquette Law School,3,Nevada,2024-09-21,Kamala Harris,48.7
-Marquette Law School,3,Minnesota,2024-08-11,Kamala Harris,56.5
-Beacon/Shaw,2.7,Pennsylvania,2024-10-04,Kamala Harris,52.1
-SurveyUSA,2.8,Michigan,2024-08-17,Kamala Harris,53.1
-Suffolk,2.7,Minnesota,2024-09-20,Kamala Harris,49.5
+pollsters,numeric_grade,scope_of_poll,population,data_created,hypothetical_match_up,candidate_name,percentage_of_vote
+AtlasIntel,2.9,Georgia,Registered Voters,2024-08-13,False,Kamala Harris,59.5
+Marquette Law School,2.8,Wisconsin,Likely Voters,2024-07-30,False,Kamala Harris,59.5
+Beacon/Shaw,2.7,Minnesota,Likely Voters,2024-07-30,True,Kamala Harris,42.1
+Beacon/Shaw,2.8,National,Likely Voters,2024-08-19,True,Kamala Harris,44
+AtlasIntel,2.9,Minnesota,Likely Voters,2024-10-04,False,Kamala Harris,57
+Beacon/Shaw,2.8,Arizona,Likely Voters,2024-08-03,True,Kamala Harris,41.1
+Suffolk,2.9,Wisconsin,Registered Voters,2024-09-21,True,Kamala Harris,54.7
+Marquette Law School,3,Minnesota,Registered Voters,2024-09-21,False,Kamala Harris,46.1
+Beacon/Shaw,3,Arizona,Registered Voters,2024-10-14,False,Kamala Harris,53.2
+SurveyUSA,2.7,Pennsylvania,Likely Voters,2024-08-18,True,Kamala Harris,55.4
+Siena,2.9,Georgia,Likely Voters,2024-08-03,True,Kamala Harris,41.1
+AtlasIntel,3,Georgia,Registered Voters,2024-09-19,False,Kamala Harris,49.7
+Beacon/Shaw,2.9,National,Likely Voters,2024-08-24,False,Kamala Harris,54.3
+SurveyUSA,2.9,Minnesota,Registered Voters,2024-10-16,True,Kamala Harris,41.8
+Suffolk,2.9,Georgia,Likely Voters,2024-10-05,False,Kamala Harris,53.3
+Marquette Law School,2.8,Pennsylvania,Likely Voters,2024-09-09,True,Kamala Harris,58.9
+SurveyUSA,2.9,National,Likely Voters,2024-09-17,True,Kamala Harris,45.8
+SurveyUSA,2.7,Georgia,Likely Voters,2024-09-23,True,Kamala Harris,59
+Marquette Law School,2.7,Georgia,Registered Voters,2024-09-26,True,Kamala Harris,44.2
+Beacon/Shaw,2.9,National,Registered Voters,2024-08-15,True,Kamala Harris,51.5
+SurveyUSA,3,Michigan,Likely Voters,2024-09-08,True,Kamala Harris,47.6
+Siena,3,Wisconsin,Registered Voters,2024-10-04,True,Kamala Harris,58.2
+Suffolk,2.9,Georgia,Likely Voters,2024-09-26,True,Kamala Harris,48.9
+Beacon/Shaw,2.7,Minnesota,Likely Voters,2024-07-30,False,Kamala Harris,58.5
+SurveyUSA,3,Wisconsin,Likely Voters,2024-09-27,True,Kamala Harris,44.6
+Beacon/Shaw,2.9,Wisconsin,Registered Voters,2024-07-31,False,Kamala Harris,55.6
+Suffolk,2.9,Arizona,Registered Voters,2024-08-30,True,Kamala Harris,56
+SurveyUSA,2.8,National,Likely Voters,2024-10-12,False,Kamala Harris,41.9
+SurveyUSA,2.9,Nevada,Registered Voters,2024-08-20,True,Kamala Harris,58.4
+Marquette Law School,2.9,Wisconsin,Likely Voters,2024-09-01,True,Kamala Harris,44.2
+Siena,2.8,Minnesota,Registered Voters,2024-09-23,False,Kamala Harris,49.2
+Marquette Law School,2.7,Arizona,Registered Voters,2024-09-09,True,Kamala Harris,42.5
+Beacon/Shaw,2.9,Michigan,Likely Voters,2024-10-10,False,Kamala Harris,49.3
+SurveyUSA,2.9,Georgia,Registered Voters,2024-09-08,True,Kamala Harris,44.3
+Siena,2.9,Wisconsin,Likely Voters,2024-08-01,False,Kamala Harris,40.1
+Marquette Law School,2.7,National,Likely Voters,2024-09-02,False,Kamala Harris,46.5
+AtlasIntel,2.8,Arizona,Registered Voters,2024-10-04,False,Kamala Harris,48.7
+Siena,2.8,Arizona,Likely Voters,2024-10-06,True,Kamala Harris,47.3
+AtlasIntel,2.9,Michigan,Likely Voters,2024-08-22,False,Kamala Harris,40.8
+Beacon/Shaw,2.9,Minnesota,Registered Voters,2024-08-04,False,Kamala Harris,47.6
+Beacon/Shaw,2.9,Nevada,Registered Voters,2024-10-20,True,Kamala Harris,57.2
+Suffolk,2.8,Michigan,Likely Voters,2024-08-24,False,Kamala Harris,56.9
+Suffolk,2.9,Arizona,Registered Voters,2024-09-03,False,Kamala Harris,49.5
+SurveyUSA,2.9,Pennsylvania,Likely Voters,2024-09-12,True,Kamala Harris,50.6
+Siena,2.9,Pennsylvania,Likely Voters,2024-10-05,False,Kamala Harris,55.9
+Suffolk,2.9,Georgia,Likely Voters,2024-08-10,False,Kamala Harris,40.3
+SurveyUSA,2.8,Arizona,Likely Voters,2024-10-21,False,Kamala Harris,49.6
+AtlasIntel,2.8,Wisconsin,Registered Voters,2024-09-24,False,Kamala Harris,42.4
+Marquette Law School,2.9,Arizona,Likely Voters,2024-08-10,False,Kamala Harris,56.7
+Marquette Law School,3,Michigan,Registered Voters,2024-10-14,True,Kamala Harris,54
