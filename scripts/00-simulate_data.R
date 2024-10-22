@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Simulate the Presidential General Election Polls (current cycle) Data
+# Purpose: Simulate the Presidential General Election Polls (current cycle) data
 # Author: Tianning He, Julia Lee, and Shuangyuan Yang
 # Date: 22 October 2024 
 # Contact: *need to fill-in
