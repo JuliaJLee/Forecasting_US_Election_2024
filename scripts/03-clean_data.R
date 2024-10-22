@@ -51,7 +51,7 @@ cleaned_data <- filtered_data |>
   mutate(
     state = if_else(is.na(state), "National", state))
 
-view(cleaned_data)
+#view(cleaned_data)
 
 
 #### Saving the Data ####
