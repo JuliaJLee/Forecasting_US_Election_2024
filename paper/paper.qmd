@@ -43,6 +43,8 @@ library(dplyr)
 
 To simulate, test, download, and clean the Presidential General Election Polls data, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `dplyr` [@dplyr],`tinytex` [@tinytex], `ggplot2` [@ggplot2], and `knitr` [@knitr]. 
 
+(**pollster methodology and idealized methodology sections can be found in the Appendix - @sec-appendix**)
+
 ## Analysis Data 
 
 *A detailed description of the clean poll data that was used within the analysis (e.g. what the data shows, why certain variables were chosen + tables/graphs showing what the data looks like)*
