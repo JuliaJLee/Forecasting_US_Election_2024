@@ -4,7 +4,7 @@ author:
   - Tianning He
   - Julia Lee
   - Shuangyuan Yang
-thanks: "Code and data are available at: https://github.com/JuliaJLee/Toronto_Paramedic_Services.git"
+thanks: "Code and data are available at: https://github.com/JuliaJLee/Forecasting_US_Election_2024.git"
 date: today
 date-format: long
 format: pdf
@@ -27,29 +27,41 @@ library(dplyr)
 
 # Introduction
 
+*A paragraph for the broader context and motivation for the analysis + the gap that we want to address*
 
+*A paragraph for that details what the analysis aims to do (i.e. its objective) + how*
+
+*A paragraph for what was found and why findings are important (i.e. their implications)*
+
+*A paragraph for setting up the rest of the paper*
 
 # Data {#sec-data}
 
 ## Presidential General Election Polls Data
 
+*A detailed description of the poll data (e.g. what the data shows, its variables, the date in which the data was downloaded + tables/graphs showing what the data looks like)*
+
+To simulate, test, download, and clean the Presidential General Election Polls data, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `dplyr` [@dplyr],`tinytex` [@tinytex], `ggplot2` [@ggplot2], and `knitr` [@knitr]. 
 
 ## Analysis Data 
 
-
+*A detailed description of the clean poll data that was used within the analysis (e.g. what the data shows, why certain variables were chosen + tables/graphs showing what the data looks like)*
 
 ## An Account on Measurement
 
+*A investigation into how voters' opinions or stances were translated into percentage of votes (i.e. a value) within the data*
 
 # Model Methodology
 
-Within this analysis, a multiple linear regression model that looks to predict the percentage of votes for the Democratic Presidential candidate from high-quality pollsters, the date in which poll data was created, and state. 
+*A place to write the purpose of the model (what it is), what it does + how - also include any decisions made (e.g. focusing only on likely voters) and explain those decisions)*
+
+*Within this analysis, a multiple linear regression model that looks to predict the percentage of votes for the Democratic Presidential candidate from high-quality pollsters, the date in which poll data was created, and state.* 
 
 # Results {#sec-results}
 
 ## Change in Percentage of Votes over time across Pollsters 
 
-This initial analysis aims to see how the percentage of votes for the Democratic Presidential candidate, Harris, has changed over time for various high-quality pollsters. 
+This initial analysis aims to see how the percentage of votes for the Democratic Presidential candidate, Harris, has changed over time for various high-quality pollsters. (*a better, more detailed description will be added*)
 
 ```{r}
 #| echo: false
@@ -67,7 +79,9 @@ ggplot(data, aes(x = created_at, y = pct)) +
   labs(x = "Date", y = "Percentage of Votes", colour = "Dataset") +
   theme(legend.position = "bottom")
 ```
-@fig-analysis shows that the percentage of votes for Harris has been steady or has slightly increased over time across various pollsters. 
+@fig-analysis shows that the percentage of votes for Harris has been steady or has slightly increased over time across various pollsters. (*a better, more detailed description will be added*)
+
+\newpage
 
 ## Change in Percentage of Votes over time across States
 
@@ -87,7 +101,9 @@ ggplot(data, aes(x = created_at, y = pct)) +
   labs(x = "Date", y = "Percentage of Votes", colour = "Dataset") +
   theme(legend.position = "bottom")
 ```
-@fig-states shows that support for Harris within each state remained fairly constant over time with minimal fluctuations. This also seems to be the case for the percentage of votes for Harris with the national polls.
+@fig-states shows that support for Harris within each state remained fairly constant over time with minimal fluctuations. This also seems to be the case for the percentage of votes for Harris with the national polls. (*a better, more detailed description will be added*)
+
+\newpage
 
 ## Considering the Percentage of Votes with Time, Pollsters, and State
 
@@ -95,7 +111,7 @@ ggplot(data, aes(x = created_at, y = pct)) +
 #| echo: false
 #| message: false
 #| label: fig-model
-#| fig-cap: ""
+#| fig-cap: "Model"
 
 library(modelsummary)
 
@@ -115,14 +131,16 @@ predictions <- data |>
 
 #view(predictions)
 
-ggplot(just_harris_high_quality, aes(x = end_date)) +
+ggplot(predictions, aes(x = created_at)) +
   geom_point(aes(y = pct), color = "black") +
-  geom_line(aes(y = fitted_date), color = "blue", linetype = "dotted") +
+  geom_line(aes(y = fitted), color = "blue", linetype = "dotted") +
   theme_classic() +
-  labs(y = "Harris percent", x = "Date", title = "Linear Model: pct ~ end_date")
+  labs(y = "Percentage of Votes", x = "Date")
 
 #modelsummary(models = list("Model 1" = model, "Model 2" = model_pollster, "Model 3" = model_state))
 ```
+
+*A better, more complex model will be added*
 
 
 \newpage
@@ -132,11 +150,19 @@ ggplot(just_harris_high_quality, aes(x = end_date)) +
 
 ## Summary
 
+*A paragraph that summarizes what was done in the analysis and a brief overview of the main findings*
+
 ## Implications
+
+*A paragraph about what the main findings imply about the election - why they are relevant*
 
 ## Limitations
 
+*A paragraph about the limitations of the model - shortcomings due to the decisions that were made in the model*
+
 ## Future Directions
+
+*A paragraph about what can be done in the future*
 
 \newpage
 
