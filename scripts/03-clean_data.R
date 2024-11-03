@@ -56,9 +56,15 @@ filtered_data <- new_data |>
 
 #view(filtered_data)
 
+## Removing any rows with missing values
+
+final_clean_data <- na.omit(filtered_data)
+
+#view(final_clean_data)
+
 #### Saving the Data ####
 
 # Save the cleaned data as a parquet file in data/02-analysis_data
 # The file will be called "analysis_data.parquet"
 
-write_parquet(filtered_data, "data/02-analysis_data/analysis_data.parquet")
+write_parquet(final_clean_data, "data/02-analysis_data/analysis_data.parquet")
