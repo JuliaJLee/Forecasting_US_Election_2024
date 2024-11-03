@@ -1,8 +1,8 @@
 #### Preamble ####
 # Purpose: Simulate the Presidential General Election Polls (current cycle) data
-# Author: Tianning He, Julia Lee, and Shuangyuan Yang
+# Author: Julia Lee
 # Date: 22 October 2024 
-# Contact: *need to fill-in
+# Contact: jlee.lee@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: Review the plan and sketches for the analysis in the "plan" folder
 # Any other information needed? N/A

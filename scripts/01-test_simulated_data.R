@@ -1,8 +1,8 @@
 #### Preamble ####
 # Purpose: Test the simulated Presidential General Election Polls (current cycle) data 
-# Author: Tianning He, Julia Lee, and Shuangyuan Yang
+# Author: Julia Lee
 # Date: 22 October 2024 
-# Contact: *need to fill-in
+# Contact: jlee.lee@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: Simulate the Presidential General Election Polls (current cycle) data 
 # Any other information needed? N/A
@@ -19,13 +19,8 @@ library(tidyverse)
 data <- read_csv("data/00-simulated_data/simulated_data.csv")
 #view(data)
 
-# Test 1: Testing whether there are any null or negative  values in the data
-# As it is very unlikely that a pollster does not have a numeric grade or that a poll does not 
-# have a percentage of votes for a candidate, this test will be useful in identifying any mistakes 
-# that may exist within the data
+# (1) Test for missing values
+# (2) Test for valid state names, poulations, and candidate names
 
-## Test for null values within the data
-is.na(data)
-
-## Test for negative values within the data
-data <= 0
+# Test for Internal Consistency: (1) Test that pct does not exceed 100 (i.e. is 
+# between 0 and 100), (2) Test that end date 
