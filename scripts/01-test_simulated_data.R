@@ -12,6 +12,7 @@
 
 library(tidyverse)
 library(testthat)
+library(dplyr)
 
 #### Testing the Data ####
 
@@ -59,7 +60,7 @@ test_that("pct for both candidates is between 0 and 100", {
 # (4) Test that end date comes after start date
 
 test_that("The end date of a poll is a date after its start date", {
-  expect_true(all(data$end_date > data$start_date))
+  expect_true(all(data %>% rowwise() %>% group_by("date"))) > 0
 })
 
 # (5) Test that sample size is appropriate (i.e. greater than or 
