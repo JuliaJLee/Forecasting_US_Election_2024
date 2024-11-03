@@ -21,7 +21,7 @@ library(here)
 
 testing_clean_data <- read_parquet(here::here("data/02-analysis_data/analysis_data.parquet"))
 
-view(testing_clean_data)
+#view(testing_clean_data)
 
 # (1) Test for missing values and negative values
 
@@ -45,7 +45,7 @@ test_that("There are valid voting populations", {
 test_that("There are valid candidate names", {
   expect_true(all(testing_clean_data$candidate_name %in% c("Kamala Harris", "Donald Trump")))})
 
-test_that("Hypothetical match-up values are either false or true", {
+test_that("Hypothetical match-up values are false", {
   expect_true(all(testing_clean_data$hypothetical %in% c("FALSE")))})
 
 pollsters = unique(testing_clean_data$pollster)
@@ -70,11 +70,11 @@ test_that("The end date of a poll is a date after its start date", {
 # equal to 30)
 
 test_that("Sample sizes are greater than 30", {
-  expect_true(all(te 30))
+  expect_true(all(testing_clean_data$sample_size > 30))
 })
 
 # (6) Test for numeric grade (i.e. that it is between 2.7 and 3)
 
 test_that("Pollster numeric grades are between 2.7 and 3, including endpoints", 
-          {expect_true(all(data$numeric_grade >= 2.7 & data$numeric_grade <=3))
+          {expect_true(all(testing_clean_data$numeric_grade >= 2.7 & testing_clean_data$numeric_grade <=3))
           })
