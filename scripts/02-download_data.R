@@ -1,9 +1,9 @@
 #### Preamble ####
 # Purpose: Download and save the actual Presidential General Election Polls (current cycle) data 
-# as of October 21, 2024
-# Author: Tianning He, Julia Lee, and Shuangyuan Yang
-# Date: 22 October 2024 
-# Contact: *need to fill-in 
+# as of November 2, 2024
+# Author: Julia Lee
+# Date: 3 November 2024 
+# Contact: jlee.lee@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: None
 # Any other information needed? N/A
