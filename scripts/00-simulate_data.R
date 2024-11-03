@@ -4,7 +4,7 @@
 # Date: 22 October 2024 
 # Contact: *need to fill-in
 # License: MIT
-# Pre-requisites: Review the plan and sketches for the analysis in the "other" folder
+# Pre-requisites: Review the plan and sketches for the analysis in the "plan" folder
 # Any other information needed? N/A
 
 
@@ -18,11 +18,11 @@ set.seed(919)
 
 # Want to generate a table that shows high-quality pollsters with a numeric grade greater than or 
 # equal to 2.7 and whether each pollster was national or state-specific. 
-# Want the table to also outline the date in which the poll data was created, the population of voters
+# Want the table to also outline the start and end dates of the polls, the population of voters
 # (e.g. likey voters or registered ones), whether the poll was a hypothetical match-up, and the percentage 
-# of votes or support for the candidate, Harris.
+# of votes or support for each candidate, Harris and Trump.
 
-# Define table parameters (i.e. the columns of the table)
+## Define table parameters (i.e. the columns of the table)
 
 high_quality_pollsters = c("Suffolk", "AtlasIntel", "SurveyUSA", "Siena", "Marquette Law School", 
                            "Beacon/Shaw")
@@ -32,38 +32,39 @@ pollster_numeric_grade = c(2.7, 2.8, 2.9, 3)
 national_or_state = c("National", "Pennsylvania", "Minnesota", "Wisconsin", "Arizona", "Nevada",
                       "Georgia", "Michigan")
 
-candidate = c("Kamala Harris")
+candidate = c("Kamala Harris", "Donald Trump")
 
-population_voters = c("Likely Voters", "Registered Voters")
+population_voters = c("lv", "rv")
 
-hypothetical = c("False", "True")
+hypothetical = c("FALSE", "TRUE")
 
-## Setting start and end dates to simulate the date in which the poll data was created
+## Setting start and end dates to simulate the date in which the polls ended 
 
-start_date = as.Date("2024-07-26")
-end_date = as.Date("2024-10-21")
+start = as.Date("2024-07-07")
+end = as.Date("2024-10-26")
 
 ## Setting the number of observations (i.e. polls) to simulate
 
 num_obs = 50
 
-## Getting the percentage of votes for Harris
+## Getting the percentage of support for the candidates
 
 pct_votes = round(runif(num_obs, 40, 60), 1)
 
-# Generate a random sample of high-quality pollsters 
+## Generate a simulation of the data using the variables defined above
 
 simulated_data <- 
   tibble(
     pollsters = sample(high_quality_pollsters, num_obs, replace = TRUE),
     numeric_grade = sample(pollster_numeric_grade, num_obs, replace = TRUE),
-    scope_of_poll = sample(national_or_state, num_obs, replace = TRUE),
+    state = sample(national_or_state, num_obs, replace = TRUE),
     population = sample(population_voters, num_obs, replace = TRUE),
-    data_created = sample(seq(from = start_date, to = end_date, by = "day"), 
+    start_date = sample(seq(from = start, to = end, by = "day"), 
                           num_obs, replace = TRUE),
+    end_date = start_date + sample(3:4, length(start_date), replace = TRUE),
     hypothetical_match_up = sample(hypothetical, num_obs, replace = TRUE),
     candidate_name = sample(candidate, num_obs, replace = TRUE),
-    percentage_of_vote = sample(pct_votes, num_obs))
+    pct = sample(pct_votes, num_obs))
 
 #view(simulated_data)
 
