@@ -1,8 +1,8 @@
 #### Preamble ####
 # Purpose: Test the cleaned Presidential General Election Polls (current cycle) data 
-# Author: Tianning He, Julia Lee, and Shuangyuan Yang
+# Author: Julia Lee
 # Date: 22 October 2024 
-# Contact: *need to fill-in
+# Contact: jlee.lee@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: Clean the raw Presidential General Election Polls (current cycle) data 
 # Any other information needed? N/A
@@ -11,21 +11,65 @@
 #### Setting Up the Workspace ####
 
 library(tidyverse)
+library(testthat)
+library(here)
 
 #### Testing Cleaned Data ####
 
-# Read in the simulated data
+# Read in the cleaned analysis data
 
-testing_clean_data <- read_csv("data/02-analysis_data/analysis_data.csv")
+testing_clean_data <- read_parquet(here::here("data/02-analysis_data/analysis_data.parquet"))
+
 #view(testing_clean_data)
 
-# Test 1: Testing whether there are any null or negative  values in the data
-# As it is very unlikely that a pollster does not have a numeric grade or that a poll does not 
-# have a percentage of votes for a candidate, this test will be useful in identifying any mistakes 
-# that may exist within the data
+# (1) Test for missing values and negative values
 
-## Test for null values within the data
-is.na(testing_clean_data)
+is.na(data)
 
-## Test for negative values within the data
-testing_clean_data <= 0
+data < 0
+
+# (2) Test for valid state names, populations, candidate names, hypothetical 
+# match-ups, and pollster names
+
+test_that("There are valid state names", {
+  expect_true(all(data$state %in% c("National", "Pennsylvania", "Minnesota", "Wisconsin", 
+                                    "Arizona", "Nevada", "Georgia", "Michigan")))})
+
+test_that("There are valid voting populations", {
+  expect_true(all(data$population %in% c("lv", "rv")))})
+
+test_that("There are valid candidate names", {
+  expect_true(all(data$candidate_name %in% c("Kamala Harris", "Donald Trump")))})
+
+test_that("Hypothetical match-up values are either false or true", {
+  expect_true(all(data$hypothetical_match_up %in% c("FALSE", "TRUE")))})
+
+test_that("There are valid pollster names", {
+  expect_true(all(data$pollsters %in% c("Suffolk", "AtlasIntel", "SurveyUSA", "Siena", "Marquette Law School", 
+                                        "Beacon/Shaw")))})
+
+# (3) Test that pct does not exceed 100 (i.e. is 
+# between 0 and 100)
+
+test_that("pct for both candidates is between 0 and 100", {
+  expect_true(all(data$pct >= 0 & data$pct <= 100))
+})
+
+# (4) Test that end date comes after start date
+
+test_that("The end date of a poll is a date after its start date", {
+  expect_true(all(data$end_date > data$start_date))
+})
+
+# (5) Test that sample size is appropriate (i.e. greater than or 
+# equal to 30)
+
+test_that("Sample sizes are greater than or equal to 30", {
+  expect_true(all(data$sample_size >= 30))
+})
+
+# (6) Test for numeric grade (i.e. that it is between 2.7 and 3)
+
+test_that("Pollster numeric grades are between 2.7 and 3, including endpoints", 
+          {expect_true(all(data$numeric_grade >= 2.7 & data$numeric_grade <=3))
+          })

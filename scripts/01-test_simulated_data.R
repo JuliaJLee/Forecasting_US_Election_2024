@@ -23,9 +23,11 @@ data <- read_csv("data/00-simulated_data/simulated_data.csv")
 
 # (1) Test for missing values and negative values
 
-is.na(data)
+test_that("There are no missing values", {
+  expect_true(!all(is.na(data)))})
 
-data < 0
+test_that("There are no negative values", {
+  expect_true(all(data <0))})
 
 # (2) Test for valid state names, populations, candidate names, hypothetical 
 # match-ups, and pollster names
