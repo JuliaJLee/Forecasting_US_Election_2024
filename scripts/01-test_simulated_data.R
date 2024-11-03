@@ -60,14 +60,14 @@ test_that("pct for both candidates is between 0 and 100", {
 # (4) Test that end date comes after start date
 
 test_that("The end date of a poll is a date after its start date", {
-  expect_true(all(data %>% rowwise() %>% group_by("date"))) > 0
+  expect_true(!all(apply(data[, c("start_date", "end_date")], 1, is.unsorted)))
 })
 
 # (5) Test that sample size is appropriate (i.e. greater than or 
 # equal to 30)
 
-test_that("Sample sizes are greater than or equal to 30", {
-  expect_true(all(data$sample_size >= 30))
+test_that("Sample sizes are greater than 30", {
+  expect_true(all(data$sample_size > 30))
 })
 
 # (6) Test for numeric grade (i.e. that it is between 2.7 and 3)
