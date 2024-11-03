@@ -20,7 +20,7 @@ set.seed(919)
 # equal to 2.7 and whether each pollster was national or state-specific. 
 # Want the table to also outline the start and end dates of the polls, the population of voters
 # (e.g. likey voters or registered ones), whether the poll was a hypothetical match-up, and the percentage 
-# of votes or support for each candidate, Harris and Trump.
+# of votes or support for each candidate, Harris and Trump, and sample size
 
 ## Define table parameters (i.e. the columns of the table)
 
@@ -56,6 +56,7 @@ pct_votes = round(runif(num_obs, 40, 60), 1)
 simulated_data <- 
   tibble(
     pollsters = sample(high_quality_pollsters, num_obs, replace = TRUE),
+    sample_size = sample(100:2500, num_obs, replace = TRUE),
     numeric_grade = sample(pollster_numeric_grade, num_obs, replace = TRUE),
     state = sample(national_or_state, num_obs, replace = TRUE),
     population = sample(population_voters, num_obs, replace = TRUE),
@@ -66,7 +67,7 @@ simulated_data <-
     candidate_name = sample(candidate, num_obs, replace = TRUE),
     pct = sample(pct_votes, num_obs))
 
-#view(simulated_data)
+view(simulated_data)
 
 #### Saving the Data ####
 
