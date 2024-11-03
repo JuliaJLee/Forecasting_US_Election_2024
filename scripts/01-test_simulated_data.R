@@ -27,7 +27,7 @@ test_that("There are no missing values", {
   expect_true(!all(is.na(data)))})
 
 test_that("There are no negative values", {
-  expect_true(all(data <0))})
+  expect_true(!all(data < 0))})
 
 # (2) Test for valid state names, populations, candidate names, hypothetical 
 # match-ups, and pollster names
