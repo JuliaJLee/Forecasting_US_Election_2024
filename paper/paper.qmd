@@ -162,6 +162,10 @@ simplified_data_harris <- simplified_data |>
   filter(
     candidate_name == "Kamala Harris")
 
+simplified_data_trump <- simplified_data |>
+  filter(
+    candidate_name == "Donald Trump")
+
 #view(simplified_data_harris)
 
 # Organize HARRIS data by week
@@ -412,11 +416,347 @@ Despite these limitations, this model’s strength lies in its ability to accoun
 
 # Results {#sec-results}
 
-## Change in Percentage of Votes over time across Pollsters 
+## Change in the Percentage of Support (pct) for Both Presidential Candidates Over Time 
 
-This initial analysis aims to see how the percentage of votes for the Democratic Presidential candidate, Harris, has changed over time for various high-quality pollsters. (*a better, more detailed description will be added*)
+This initial analysis aims to understand how the percentage of support for both candidates has changed over the course of the 12 weeks defined by the model.
+
+```{r}
+#| echo: false 
+#| message: false
+#| label: fig-pctovertime
+#| fig-cap: Percentage of Support for Both Candidates Over 12 Weeks (August 4 to October 26, 2024)
+
+# For TRUMP
+
+# Organize TRUMP data by week
+## The following code (lines 111-113) was provided by a Stack Overflow answer 
+## (link: https://stackoverflow.com/questions/40581705/group-dates-by-week-in-r)
+
+trump_by_week <- simplified_data_trump %>% 
+  mutate(week = cut.Date(end_date, breaks = "1 week", labels = FALSE)) %>% 
+  arrange(end_date)
+
+trump_by_week <- trump_by_week[,-c(1,2)]
+
+#view(trump_by_week)
+
+# Pooling polls for TRUMP
+
+pooled_polls_trump <- tibble(
+  week_1 = round(sum(trump_by_week[1:4,]$pct * (trump_by_week[1:4,]$sample_size / 
+                                                   sum(trump_by_week[1:4,]$sample_size))),2),
+  week_2 = round(sum(trump_by_week[5:11,]$pct * (trump_by_week[5:11,]$sample_size / 
+                                                    sum(trump_by_week[5:11,]$sample_size))),2),
+  week_3 = round(sum(trump_by_week[12,]$pct * (trump_by_week[12,]$sample_size / 
+                                                  sum(trump_by_week[12,]$sample_size))),2),
+  week_4 = round(sum(trump_by_week[13:25,]$pct * (trump_by_week[13:25,]$sample_size / 
+                                                     sum(trump_by_week[13:25,]$sample_size))),2),
+  week_5 = round(sum(trump_by_week[26:40,]$pct * (trump_by_week[26:40,]$sample_size / 
+                                                     sum(trump_by_week[26:40,]$sample_size))),2),
+  week_6 = round(sum(trump_by_week[41:45,]$pct * (trump_by_week[41:45,]$sample_size / 
+                                                     sum(trump_by_week[41:45,]$sample_size))),2),
+  week_7 = round(sum(trump_by_week[46:81,]$pct * (trump_by_week[46:81,]$sample_size / 
+                                                     sum(trump_by_week[46:81,]$sample_size))),2),
+  week_8 = round(sum(trump_by_week[82:130,]$pct * (trump_by_week[82:130,]$sample_size / 
+                                                      sum(trump_by_week[82:130,]$sample_size))),2),
+  week_9 = round(sum(trump_by_week[131:136,]$pct * (trump_by_week[131:136,]$sample_size / 
+                                                       sum(trump_by_week[131:136,]$sample_size))),2),
+  week_10 = round(sum(trump_by_week[137:162,]$pct * (trump_by_week[137:162,]$sample_size / 
+                                                        sum(trump_by_week[137:162,]$sample_size))),2),
+  week_11 = round(sum(trump_by_week[163:197,]$pct * (trump_by_week[163:197,]$sample_size / 
+                                                        sum(trump_by_week[163:197,]$sample_size))),2), 
+  week_12 = round(sum(trump_by_week[198:240,]$pct * (trump_by_week[198:240,]$sample_size / 
+                                                        sum(trump_by_week[198:240,]$sample_size))),2)
+)
+
+#view(pooled_polls_trump)
+
+## Flipping the dataframe to have week as one column and the weighted average pct 
+## for each week in another column
+
+## The following code (line 182) was provided by a Stack Overflow answer 
+## (link: https://stackoverflow.com/questions/28680994/converting-rows-into-columns-and-columns-into-rows-using-r)
+
+final_pooled_polls_trump <- as.data.frame(t(pooled_polls_trump))
+
+#view(final_pooled_polls_trump)
+
+#colnames(final_pooled_polls_trump)
+#row.names(final_pooled_polls_trump)
+
+## Renaming the weighted avg. pct column 
+
+final_pooled_polls_trump <-
+  final_pooled_polls_trump |>
+  rename(
+    "WeightedAveragepct" = V1)
+
+## Adding another column for each week 
+
+final_pooled_polls_trump$Week <- c(1:12)
+
+## Bringing "Week" column to the front
+
+final_pooled_polls_trump <- final_pooled_polls_trump %>% relocate(Week)
+
+## Changing row names to just be numbers 1 through 12
+
+rownames(final_pooled_polls_trump) <- c(1:12)
+
+#view(final_pooled_polls_trump)
+
+final_pooled_both <- merge(final_pooled_polls_harris, final_pooled_polls_trump, 
+                           by="Week")
+
+names(final_pooled_both)[2] <- "Harris"
+
+names(final_pooled_both)[3] <- "Trump"
+
+#view(final_pooled_both)
+
+ggplot(data = final_pooled_both, aes(x = Week)) + 
+  geom_line(aes(y = Harris, colour = "Harris")) + 
+  geom_line(aes(y = Trump, colour = "Trump")) +
+  geom_point(aes(y = Harris), color = "blue") +
+  geom_point(aes(y = Trump), color="red") +
+  theme_light() +
+  labs(
+    y = "Percentage of Support (%)",
+    caption = "Data Source: 538"
+  ) + 
+  ylim(40,55) + scale_x_continuous(name = "Week", breaks = seq(1,12,by=1), limits = c(1, 12)) + 
+  ggtitle("Percentage of Support For Presidential Candidates Over Time") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(name = "Candidate", values = c("Harris" = "blue", "Trump" = "red"))
+
+```
+
+@fig-pctovertime presents the weighted average percentage of support for each presidential candidate over time. While both candidates appear to have had fluctuations in the percentage of support they received, the difference between their percentage of support is smaller in Week 12 than it was at Week 1. In week 1, Trump received an additional 2.39% of support compared to Harris, and in Week 12, his percentage of support was 1.35% higher than Harris'. This pattern further indicates that as support for Trump has dropped, support for Harris has increased over the course of 12 weeks.
+
+## Predicting the Percentage of Support (pct) for Both Presidential Candidates Over Time
+
+```{r}
+#| echo: false 
+#| message: false
+#| label: fig-predictedharris
+#| fig-cap: Predicted Percentage of Support for Harris Over 12 Weeks (August 4 to October 26, 2024)
+
+# Regression model: HARRIS
+
+harris_model <- lm(formula = WeightedAveragepct ~ Week, data = final_pooled_polls_harris)
+
+# Adding predicted values for weeks 1 to 12 using the linear model as a new column next to the weighted 
+# average pct
+
+pooled_and_predicted_harris <- final_pooled_polls_harris
+
+pooled_and_predicted_harris$Predictedpct <- round(predict(harris_model), 2)
+
+#view(pooled_and_predicted_harris)
+
+ggplot(pooled_and_predicted_harris, aes(Week, Predictedpct)) +
+  geom_point(colour = "blue") +
+  geom_smooth(method='lm', color='black') +
+  theme_light() +
+  labs(x = "Week", y = "Percentage of Support (pct)", 
+       title = "Predicted Percentage of Support (pct) for Harris Over Time") +
+  theme(plot.title = element_text(hjust=0.5)) +
+  scale_x_continuous(name = "Week", breaks = seq(1,12,by=1), limits = c(1, 12)) +
+  geom_line(aes(y = WeightedAveragepct, colour = "Weighted Average pct")) +
+  scale_color_manual(name = "Data", values = c("Weighted Average pct" = "darkgreen"))
+  
+```
 
 
+```{r}
+#| echo: false 
+#| message: false
+#| label: fig-predictedtrump
+#| fig-cap: Predicted Percentage of Support for Trump Over 12 Weeks (August 4 to October 26, 2024)
+
+# Regression model: TRUMP
+
+trump_model <- lm(formula = WeightedAveragepct ~ Week, data = final_pooled_polls_trump)
+
+# Adding predicted values for weeks 1 to 12 using the linear model as a new column next to the weighted 
+# average pct
+
+pooled_and_predicted_trump <- final_pooled_polls_trump
+
+pooled_and_predicted_trump$Predictedpct <- round(predict(trump_model), 2)
+
+#view(pooled_and_predicted_trump)
+
+ggplot(pooled_and_predicted_trump, aes(Week, Predictedpct)) +
+  geom_point(colour = "red") +
+  geom_smooth(method='lm', color='black') +
+  theme_light() +
+  labs(x = "Week", y = "Percentage of Support (pct)", 
+       title = "Predicted Percentage of Support (pct) for Trump Over Time") +
+  theme(plot.title = element_text(hjust=0.5)) +
+  scale_x_continuous(name = "Week", breaks = seq(1,12,by=1), limits = c(1, 12)) +
+  geom_line(aes(y = WeightedAveragepct, colour = "Weighted Average pct")) +
+  scale_color_manual(name = "Data", values = c("Weighted Average pct" = "darkgreen"))
+
+```
+
+@fig-predictedharris and @fig-predictedtrump provides a comparison of the predicted percentage of support from the linear model and the weighted average percentage of support that was computed with the poll data for Harris and Trump. Though both models do not seem to accurately capture the fluctuations in support each candidate received over time, they do appear to capture the overall increase in support for Harris along with the overall decrease in support for Trump over the 12 weeks. This further gives rise to the idea that while the percentage of support for Trump decreased, the percentage of support for Harris increased as the weeks went by. 
+
+## Forecasting the Percentage of Support (pct) for Both Presidential Candidates For Week 13
+
+The main objective of this model is to forecast the percentage of support Harris and Trump will receive in the final week before the election. This week - October 27, 2024 to November 2, 2024 - is Week 13, and the model uses a seasonal index along with a predicted value from the linear model to compute a forecast. The forecasted percentages of support for each candidate are shown in @fig-forecast below. 
+
+```{r}
+#| echo: false 
+#| message: false
+#| warning: false
+#| label: fig-forecast
+#| fig-cap: Presenting the Forecasted Percentages of Support for Harris and Trump in Week 13
+
+# Adding a column for a ratio for each week
+
+
+## For HARRIS 
+
+pooled_and_predicted_harris <- final_pooled_polls_harris
+
+pooled_and_predicted_harris$Predictedpct <- round(predict(harris_model), 2)
+
+pooled_and_predicted_harris$Ratio <- round((pooled_and_predicted_harris$WeightedAveragepct / 
+                                        pooled_and_predicted_harris$Predictedpct), 3)
+
+#view(pooled_and_predicted_harris)
+
+
+## For TRUMP 
+
+pooled_and_predicted_trump <- final_pooled_polls_trump
+
+pooled_and_predicted_trump$Predictedpct <- round(predict(trump_model), 2)
+
+pooled_and_predicted_trump$Ratio <- round((pooled_and_predicted_trump$WeightedAveragepct / 
+                                              pooled_and_predicted_trump$Predictedpct), 3)
+
+#view(pooled_and_predicted_trump)
+
+# Now since the data was manipulated so that every four weeks corresponds to a month (August, 
+# September, and October), and as week 13 is the first week of November in the model, need to 
+# find the seasonal index (i.e. average ratio) for the first week across each month to be able 
+# to forecast it
+
+
+## For HARRIS
+
+ratios_harris <- tibble(
+  Month = c("August 2024", "September 2024", "October 2024"),
+  Week_1 = pooled_and_predicted_harris[c(1,5,9),]$Ratio,
+  Week_2 = pooled_and_predicted_harris[c(2,6,10),]$Ratio,
+  Week_3 = pooled_and_predicted_harris[c(3,7,11),]$Ratio,
+  Week_4 = pooled_and_predicted_harris[c(4,8,12),]$Ratio
+)
+
+#view(ratios_harris)
+
+seasonal_index_harris <- tibble(
+  Week_1_Index = round(((sum(pooled_and_predicted_harris[c(1,5,9),]$Ratio)) / 3), 3),
+  Week_2_Index = round(((sum(pooled_and_predicted_harris[c(2,6,10),]$Ratio)) / 3), 3),
+  Week_3_Index = round(((sum(pooled_and_predicted_harris[c(3,7,11),]$Ratio)) / 3), 3),
+  Week_4_Index = round(((sum(pooled_and_predicted_harris[c(4,8,12),]$Ratio)) / 3), 3),
+)
+
+#view(seasonal_index_harris)
+
+
+## For TRUMP
+
+ratios_trump <- tibble(
+  Month = c("August 2024", "September 2024", "October 2024"),
+  Week_1 = pooled_and_predicted_trump[c(1,5,9),]$Ratio,
+  Week_2 = pooled_and_predicted_trump[c(2,6,10),]$Ratio,
+  Week_3 = pooled_and_predicted_trump[c(3,7,11),]$Ratio,
+  Week_4 = pooled_and_predicted_trump[c(4,8,12),]$Ratio
+)
+
+#view(ratios_trump)
+
+seasonal_index_trump <- tibble(
+  Week_1_Index = round(((sum(pooled_and_predicted_trump[c(1,5,9),]$Ratio)) / 3), 3),
+  Week_2_Index = round(((sum(pooled_and_predicted_trump[c(2,6,10),]$Ratio)) / 3), 3),
+  Week_3_Index = round(((sum(pooled_and_predicted_trump[c(3,7,11),]$Ratio)) / 3), 3),
+  Week_4_Index = round(((sum(pooled_and_predicted_trump[c(4,8,12),]$Ratio)) / 3), 3),
+)
+
+#view(seasonal_index_trump)
+
+#### Forecasting Harris and Trump support in week 13 ####
+
+# Now can use linear model and index to forecast the percentage of support each candidate 
+# will have in week 13 (i.e. the week leading up to the election)
+
+## For HARRIS
+
+### Predicting pct for week 13 using linear model
+
+new_point = data.frame(Week = 13)
+
+prediction = predict(harris_model, newdata = new_point)
+
+#prediction
+
+### Multiplying the predicted value by the seasonal index for week 1
+### Get the seasonal index for week 1
+
+forecasted_pct = prediction * (seasonal_index_harris[1,1])
+
+#forecasted_pct
+
+#### Therefore, forecast that the percentage of support for Harris in the week leading up to 
+#### the election will be 48.03%.
+
+
+## For TRUMP
+
+### Predicting pct for week 13 using linear model
+
+new_point = data.frame(Week = 13)
+
+prediction = predict(trump_model, newdata = new_point)
+
+#prediction
+
+### Multiplying the predicted value by the seasonal index for week 1
+### Get the seasonal index for week 1
+
+forecasted_pct = prediction * (seasonal_index_trump[1,1])
+
+#forecasted_pct
+
+#### Therefore, forecast that the percentage of support for Trump in the week leading up to 
+#### the election will be 47.98%.
+
+ggplot(data = final_pooled_both, aes(x = Week)) + 
+  geom_line(aes(y = Harris, colour = "Harris")) + 
+  geom_line(aes(y = Trump, colour = "Trump")) +
+  geom_point(aes(y = Harris), color = "blue") +
+  geom_point(aes(y = Trump), color="red") +
+  theme_light() +
+  labs(
+    y = "Percentage of Support (%)",
+    caption = "Data Source: 538"
+  ) + 
+  ylim(46,50) + scale_x_continuous(name = "Week", breaks = seq(1,13,by=1), limits = c(1, 13)) + 
+  ggtitle("Forecasted Percentages of Support for Harris and Trump in Week 13") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(name = "Candidate", values = c("Harris" = "blue", "Trump" = "red")) +
+  geom_point(aes(x = 13, y = 48.03), colour = "blue", size = 1.5) + 
+  geom_point(aes(x = 13, y = 47.98), colour = "red", size = 1.5) 
+
+```
+
+With @fig-forecast, it appears as the presidential election will be a tight race as the forecasts of percentage of support for Harris and Trump in Week 13 are very similar. In the final week leading up to the election (October 27, 2024 to November 2, 2024), Harris is expected to receive more support while Trump is expected to receive less support in Week 13. The exact forecasts of the model are as follows:
+
+* This model forecasts that the percentage of support for Harris in the week leading up to the election will be 48.03%.
+* On the other hand, the model forecasts that the percentage of support for Trump in the week leading up to the election will be 47.98%.
 
 \newpage
 
