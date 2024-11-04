@@ -80,7 +80,7 @@ Putting these variables together, the analysis is able to construct a model that
 
 From the day of the week to different survey methods (e.g. email, phone, mail, etc.), there are many things that can influence how voters’ opinions or preferences are shaped and how those opinions are reduced down to a value. The percentage of support (pct) for a candidate is the value that is meant to reflect voters’ opinions on who should be president. As a single percentage is the end result of a survey that was conducted by a pollster, voters’ thoughts and opinions can be translated into an entry in a dataset by considering the ways in which pollsters build their surveys along with how they analyze and interpret the responses. Opinions may be converted into data by calculating average or percentages of responses to closed-ended questions. Preference towards a particular candidate or party could be measured through the coding and counting of themes or key words within responses to open-ended questions. Additionally, how responses are interpreted (e.g. how themes are generated for open-ended responses) can impact how voters’ thoughts are measured. Thus, complex thoughts and opinions can be measured through careful consideration about what is being asked, how it is being asked, and how the responses are interpreted. 
 
-A detailed account about the methodology of a pollster found within the data obtained from 538 along with an idealized methodology and survey can be found in the Appendix (SECTION).
+A detailed account about the methodology of a pollster found within the data obtained from 538 along with an idealized methodology and survey can be found in the Appendix (@sec-pollster, @sec-survey).
 
 
 # Model 
@@ -804,9 +804,9 @@ Given these limitations, moving forward, this analysis should be adapted to inco
 
 \appendix
 
-# Appendix {#sec-appendix}
+# Appendix 
 
-## Pollster Methodology 
+## Pollster Methodology {#sec-pollster}
 
 We selected the polling organization YouGov and discussed its survey methods as well as its main features, strengths and weaknesses. From the data obtained, the population surveyed by YouGov is American voters, especially citizens who are eligible to vote. YouGov's framework is usually participants who voluntarily register and regularly participate in surveys. These panelists express their views in the form of online questionnaires, and the sample is part of YouGov's online panel. In the data, we see some specific stratification information, such as political parties (DEM, REP, etc.), which indicates that YouGov may use stratified sampling to ensure the diversity of the sample. YouGov's sample is recruited through voluntary online panels. Users can actively register to become panel members and accept survey invitations at any time. This recruitment method is non-random, but the cost is relatively low and the number of people is large.
 
@@ -816,7 +816,7 @@ YouGov uses weighting to adjust when dealing with non-response issues. When some
 
 Further, YouGov's questionnaire is answered online, which can quickly obtain a large amount of data, and the population (people who answer the questionnaire) is distributed in various places, which improves flexibility and efficiency. The questionnaire also covers a variety of candidates and parties, and distinguishes the support rate of different parties. The content of the questionnaire can be changed according to different groups to ensure that the survey questions are relevant to the background of the respondents. At the same time, there are some potential problems with the questionnaire. First, because the questionnaire is answered online, some people may not answer the questionnaire seriously, which will affect the accuracy of the questionnaire. Second, because participation in the questionnaire is voluntary, some groups may be under- or over-represented, which will also lead to biased survey results.
 
-## Idealized Pollster Methodology
+## Idealized Pollster Methodology {#sec-survey}
 
 Survey Form Link: https://forms.gle/S4cyiZNej46zfxq29
 
@@ -891,7 +891,7 @@ Additionally, the survey utilizes a re-contacting method to verify data authenti
 
 \newpage
 
-# Copy of the survey questions
+## Copy of the survey questions
 
 Voter Eligibility and Participation:
 
