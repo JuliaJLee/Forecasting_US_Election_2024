@@ -22,8 +22,9 @@ library(tinytex)
 library(knitr)
 library(ggplot2)
 library(dplyr)
+library(arrow)
+library(here)
 ```
-
 
 # Introduction
 
@@ -53,11 +54,144 @@ To simulate, test, download, and clean the Presidential General Election Polls d
 
 *A investigation into how voters' opinions or stances were translated into percentage of votes (i.e. a value) within the data*
 
-# Model Methodology
+# Model 
 
-*A place to write the purpose of the model (what it is), what it does + how - also include any decisions made (e.g. focusing only on likely voters) and explain those decisions)*
+The objective of the present analysis is to forecast the percentage of support both presidential candidates, Kamala Harris and Donald Trump, will receive in the final week (October 27, 2024 to November 2, 2024) leading up to the election. The Presidential Poll data provided by 538 (CITE) reflects voters’ opinions and preferences about who should be the next President of the United States across time. As those opinions or preferences are subject to change as time goes on, this model seeks to account for this variability by building “seasonal indexes” and using them with a linear model to forecast the percentage of support for both presidential candidates.
 
-*Within this analysis, a multiple linear regression model that looks to predict the percentage of votes for the Democratic Presidential candidate from high-quality pollsters, the date in which poll data was created, and state.* 
+In this model, a “season” is referred to as a 7-day week that is found between Sunday August 4, 2024 and Saturday October 26, 2024. The start date is August 4, 2024 because this date allows there to be enough data to observe the percentage of support for both candidates over several weeks. The end date is October 26, 2024 as this leaves roughly a week (October 27, 2024 to November 2, 2024) before the election on Tuesday November 5, 2024 to ensure that a forecast for this final week can be made. 
+
+Further, this model considers the following variables: 
+
+* **Pollsters with a numeric grade of 2.7 and above**: This model uses a cut-off of 2.7 for the numeric grade to strike a balance between the amount of data and the quality of the data. The design of this model requires that there is at least one poll that was conducted in each “season” or week, and this could not have been satisfied if only pollsters with a numeric grade of 3 are considered. A numeric grade of 2.7 and above allows this model to have sufficient data as well as data of high quality. 
+* **The likely voter (lv) population**: Likely voters are defined as voters who show strong intentions to vote on election day (CITE). With this, the model focuses on this particular voter population to generate a forecast that more closely resembles election day.
+* **States**: This model looks at polls that were state-specific rather than national polls. Though each state is not considered individually in this analysis, this model considers these state-specific polls as they also allow for sufficient data to be used within the model.
+* **Sample Size**: Poll sample size is used within the model to pool the poll data for each week within the time period defined by the model above. 
+* **Polls that did not ask about hypothetical match-ups**: As this model aims to forecast and compare support for the presidential candidates in the current 2024 election, hypothetical match-ups are not considered.
+* **Presidential Candidates**: This model looks at the percentage of support for both Kamala Harris and Donald Trump throughout the analysis. 
+* **Poll Start and End Dates**: Start and end dates are important variables in the model as they are used to categorize poll data into the different “seasons” or weeks between August 4, 2024 and October 26, 2024. 
+* **Percentage of Support (pct)**: This is the target variable to be estimated by the model.  
+
+## Model Process 
+
+*Code that runs through the following steps can be found in the repository linked on page 1.*
+
+### Organize Poll Data for each Candidate by Week 
+
+For this model, a total of 12 weeks of poll data is analyzed. The exact start and end dates of each week (defined by the model) can be found below in @tbl-weeks. Every four weeks corresponds to a month. The first four weeks are in August 2024, the next four weeks are in September 2024, and the last four weeks are in October 2024. 
+
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-weeks
+#| tbl-cap: "Weeks Defined by the Model" 
+
+values <- tibble(
+  week_number = c(1:12), 
+  week_dates = c("Aug. 4-10", "Aug. 11-17", "Aug. 18-24", "Aug. 25-31", "Sept. 1-7", "Sept. 8-14",
+            "Sept. 15-21", "Sept. 22-28", "Sept. 29 - Oct. 5", "Oct. 6-12", "Oct. 13-19", "Oct. 20-26")
+)
+
+kable(values,
+  col.names = c("Week", "Dates"),
+    digits = 1,
+    booktabs = TRUE,
+    linesep = "",
+    align = c("c", "c"),
+    format.args = list(big.mark = ",")
+  )
+
+```
+
+
+Using the start and end dates of the polls, the model first filters on the polls that were conducted between August 4, 2024 and October 26, 2024 for each candidate. Then, it assigns each poll to a week as outlined in @tbl-weeks. An example outcome is shown below for Kamala Harris (@tbl-organizingbyweek).
+
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-organizingbyweek
+#| tbl-cap: "Poll Data Organized by Week For Harris" 
+
+#### Organizing poll data by week ####
+
+# Read in the cleaned analysis data
+
+model_data <- read_parquet(here::here("data/02-analysis_data/analysis_data.parquet"))
+
+#view(model_data)
+
+# Change the format of both start and end dates
+
+changed_dates <- model_data |>
+  mutate(
+    start_date = mdy(start_date),
+    end_date = mdy(end_date)
+  )
+
+#view(changed_dates)
+
+# Sort the data by end date in ascending order
+
+sorted <- changed_dates[order(changed_dates$end_date),]
+
+#view(sorted)
+
+# Remove the polls from 2022 and 2023
+
+only_2024 <- sorted[-c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14), ]
+
+#view(only_2024)
+
+# Keep polls that ended in Aug. 6 until Oct. 26, 2024
+
+august_start <- only_2024[-(1:14),]
+
+#view(august_start)
+
+aug_to_oct <- august_start[-(481:630),]
+
+#view(aug_to_oct)
+
+# Remove pollster, numeric_grade, state, population, and hypothetical columns 
+# and filter on HARRIS
+
+columns_to_keep <- c("start_date", "end_date", "sample_size", "candidate_name", "pct")
+
+simplified_data = aug_to_oct[columns_to_keep]
+
+simplified_data_harris <- simplified_data |>
+  filter(
+    candidate_name == "Kamala Harris")
+
+#view(simplified_data_harris)
+
+# Organize HARRIS data by week
+## The following code (lines 99-101) was provided by a Stack Overflow answer 
+## (link: https://stackoverflow.com/questions/40581705/group-dates-by-week-in-r)
+
+harris_by_week <- simplified_data_harris %>% 
+  mutate(week = cut.Date(end_date, breaks = "1 week", labels = FALSE)) %>% 
+  arrange(end_date)
+
+harris_by_week <- harris_by_week[,-c(1,2)]
+
+#view(harris_by_week)
+
+harris_by_week |>
+  slice(1:6) |>
+  kable(
+    col.names = c("Sample Size", "Candidate", "Percentage of Support (pct)", "Week"),
+    digits = 1,
+    booktabs = TRUE,
+    linesep = "",
+    align = c("c", "c", "c", "c"),
+    format.args = list(big.mark = ",")
+  )
+
+```
+
+
+Each row in the outcome above (@tbl-organizingbyweek) represents a poll, and the “Week” column indicates the week in which that poll occurred. For example, the first four rows show polls that were conducted in the week of August 4 to 10, 2024. The last two rows show polls that occurred between August 11 to 17, 2024 (i.e. Week 2). Each poll’s sample size and pct estimate are also included.
+
 
 # Results {#sec-results}
 
@@ -65,84 +199,6 @@ To simulate, test, download, and clean the Presidential General Election Polls d
 
 This initial analysis aims to see how the percentage of votes for the Democratic Presidential candidate, Harris, has changed over time for various high-quality pollsters. (*a better, more detailed description will be added*)
 
-```{r}
-#| echo: false
-#| message: false
-#| label: fig-analysis
-#| fig-cap: "The Percentage of Votes For the Democratic Presidential Candidate Over Time Across Pollsters"
-
-data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
-#view(data)
-
-ggplot(data, aes(x = created_at, y = pct)) +
-  geom_point() + geom_smooth(method = lm, se = FALSE) +
-  theme_minimal() +
-  facet_wrap(vars(pollster)) +
-  labs(x = "Date", y = "Percentage of Votes", colour = "Dataset") +
-  theme(legend.position = "bottom")
-```
-@fig-analysis shows that the percentage of votes for Harris has been steady or has slightly increased over time across various pollsters. (*a better, more detailed description will be added*)
-
-\newpage
-
-## Change in Percentage of Votes over time across States
-
-```{r}
-#| echo: false
-#| message: false
-#| label: fig-states
-#| fig-cap: "The Percentage of Votes For the Democratic Presidential Candidate Over Time Across States"
-
-data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
-#view(data)
-
-ggplot(data, aes(x = created_at, y = pct)) +
-  geom_point() + geom_smooth(method = lm, se = FALSE) +
-  theme_minimal() +
-  facet_wrap(vars(state)) +
-  labs(x = "Date", y = "Percentage of Votes", colour = "Dataset") +
-  theme(legend.position = "bottom")
-```
-@fig-states shows that support for Harris within each state remained fairly constant over time with minimal fluctuations. This also seems to be the case for the percentage of votes for Harris with the national polls. (*a better, more detailed description will be added*)
-
-\newpage
-
-## Considering the Percentage of Votes with Time, Pollsters, and State
-
-```{r}
-#| echo: false
-#| message: false
-#| label: fig-model
-#| fig-cap: "Model"
-
-library(modelsummary)
-
-data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
-#view(data)
-
-model <- lm(pct ~ created_at, data = data)
-model_pollster <- lm(pct ~ created_at + pollster, data = data)
-model_state <- lm(pct ~ created_at + pollster + state, data = data)
-
-predictions <- data |>
-  mutate(
-    fitted = predict(model),
-    fitted_pollster = predict(model_pollster),
-    fitted_state = predict(model_state)
-  )
-
-#view(predictions)
-
-ggplot(predictions, aes(x = created_at)) +
-  geom_point(aes(y = pct), color = "black") +
-  geom_line(aes(y = fitted), color = "blue", linetype = "dotted") +
-  theme_classic() +
-  labs(y = "Percentage of Votes", x = "Date")
-
-#modelsummary(models = list("Model 1" = model, "Model 2" = model_pollster, "Model 3" = model_state))
-```
-
-*A better, more complex model will be added*
 
 
 \newpage
