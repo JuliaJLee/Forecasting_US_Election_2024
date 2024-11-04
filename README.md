@@ -20,4 +20,4 @@ The repository is structured as follows:
 
 ## Statement on LLM usage
 
-Aspects of the "Idealized Methodology" appendix were written with the help of LLMs. The full chat history can be found in the `plan/llm_usage` directory.
+Aspects of the "Idealized Methodology" appendix were written with the help of LLMs (ChatGPT-4o). The full chat history can be found in the `plan/llm_usage` directory.
