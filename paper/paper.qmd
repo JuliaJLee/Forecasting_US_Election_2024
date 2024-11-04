@@ -29,6 +29,7 @@ library(here)
 # Introduction
 
 
+
 # Data {#sec-data}
 
 To simulate, test, download, clean, and model data throughout this analysis, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `dplyr` [@dplyr],`tinytex` [@tinytex], `ggplot2` [@ggplot2], `knitr` [@knitr], `arrow` [@arrow], `here` [@here], and `testthat` [@testthat]. 
@@ -807,81 +808,269 @@ Given these limitations, moving forward, this analysis should be adapted to inco
 
 ## Pollster Methodology 
 
-We selected YouGov, a polling organization, and discussed its survey methodology and its main features, strengths, and weaknesses. From the data obtained, the population of YouGov surveys is American voters, especially citizens who are eligible to vote. YouGov's framework is usually participants who voluntarily register and participate in surveys regularly. These panel members express their opinions in the form of online questionnaires. The sample is a part of YouGov's online panel. In the data, we see some specific stratification information, such as political parties (DEM, REP, etc.), which indicates that YouGov may use stratified sampling to ensure the diversity of the sample.
-YouGov's sample is recruited through a voluntary online panel. Users can actively register to become panel members and accept survey invitations at any time. This recruitment method is non-random, but the cost is relatively low and the number of people is large.
+We selected the polling organization YouGov and discussed its survey methods as well as its main features, strengths and weaknesses. From the data obtained, the population surveyed by YouGov is American voters, especially citizens who are eligible to vote. YouGov's framework is usually participants who voluntarily register and regularly participate in surveys. These panelists express their views in the form of online questionnaires, and the sample is part of YouGov's online panel. In the data, we see some specific stratification information, such as political parties (DEM, REP, etc.), which indicates that YouGov may use stratified sampling to ensure the diversity of the sample. YouGov's sample is recruited through voluntary online panels. Users can actively register to become panel members and accept survey invitations at any time. This recruitment method is non-random, but the cost is relatively low and the number of people is large.
 
-YouGov uses stratified sampling, which stratifies respondents according to demographic variables, such as age, gender, political party, etc., to ensure that each subgroup in the sample is fully represented. Stratified sampling can ensure that different groups (such as party supporters, different age groups, etc.) are properly represented, avoid a single group dominating, improve estimation accuracy, and reduce sampling errors. However, if the stratification criteria are not properly chosen or there are large individual differences within the strata, stratified sampling may increase sampling errors. It may be more time-consuming to design and implement than simple random sampling, and more resources are required to determine the stratification and sampling scheme, especially when the population size is large.
+YouGov uses stratified sampling, that is, respondents are stratified according to demographic variables such as age, gender, political party, etc. to ensure that each subgroup in the sample is fully represented. Stratified sampling can ensure that different groups (such as party supporters, different age groups, etc.) are properly represented, avoid the dominance of a single group, improve the accuracy of estimates, and reduce sampling errors. However, stratified sampling may increase sampling errors if the stratification criteria are not properly selected or if there are large individual differences within the strata. Compared with simple random sampling, the design and implementation of stratified sampling may be more time-consuming and require more resources to determine the stratification and sampling scheme, especially when the population size is large. In the article "On Stratified Sampling for Estimating Coalitional Values", the author A. Saavedra-Nieves explored how to use stratified sampling methods to estimate Owen values and Banzhaf–Owen values in TU-games and analyzed the stratified sampling method. The author divided the players' compatible coalitions into different strata according to size, and then used simple random sampling in each stratum to obtain the estimates. The method was verified and the results showed that the stratified sampling method can more effectively reduce errors and significantly reduce variance than traditional simple random sampling [@sampling]. When faced with large-scale data, stratified sampling can significantly improve computational efficiency and accuracy. These methods have wide applicability in practical applications.
 
-YouGov uses weighting to adjust when dealing with non-response issues. When some people do not respond or the response rate of certain groups is low, YouGov will weight the responses of these groups according to demographic data to ensure that the final survey results can more accurately reflect the overall situation. This can help correct the bias caused by the low response rate of certain groups and make the results more representative.
-YouGov's questionnaire is answered online, which can quickly obtain a large amount of data, and the population (people who answer the questionnaire) is distributed in various places, which improves flexibility and efficiency. The questionnaire also covers a variety of candidates and political parties, and distinguishes the support rates of different political parties. The content of the questionnaire can be changed according to different groups to ensure that the survey questions are relevant to the background of the respondents. At the same time, there are some potential problems with the questionnaire. First, since the questionnaire is answered online, some people may not answer the questionnaire seriously, which may affect the accuracy of the questionnaire. Secondly, since it is voluntary to participate in the questionnaire, some groups may be under-represented or over-represented, which will also lead to biased survey results.
+YouGov uses weighting to adjust when dealing with non-response issues. When some people do not respond or the response rate of certain groups is low, YouGov will weight the responses of these groups based on demographic data to ensure that the final survey results can more accurately reflect the overall situation. This can help correct the bias caused by the low response rate of certain groups and make the results more representative.
+
+Further, YouGov's questionnaire is answered online, which can quickly obtain a large amount of data, and the population (people who answer the questionnaire) is distributed in various places, which improves flexibility and efficiency. The questionnaire also covers a variety of candidates and parties, and distinguishes the support rate of different parties. The content of the questionnaire can be changed according to different groups to ensure that the survey questions are relevant to the background of the respondents. At the same time, there are some potential problems with the questionnaire. First, because the questionnaire is answered online, some people may not answer the questionnaire seriously, which will affect the accuracy of the questionnaire. Second, because participation in the questionnaire is voluntary, some groups may be under- or over-represented, which will also lead to biased survey results.
 
 ## Idealized Pollster Methodology
 
 Survey Form Link: https://forms.gle/S4cyiZNej46zfxq29
 
 ### Introduction
-In this appendix, I present a detailed survey methodology designed to predict the outcome of the upcoming U.S. presidential election. The design leverages a $100K budget and focuses on achieving a representative, accurate, and methodologically robust sample. The survey will use mixed-mode recruitment (in person, phone, online, and SMS), with a sample size of 3,000 respondents. Detailed weighting adjustments and validation strategies will ensure the integrity of the data, while aggregation with other polls will provide a more accurate forecast.
+
+This appendix presents an idealized methodology for forecasting the upcoming US. presidential election within a hypothetical $100,000 budget, minimizing challenges such as non-response bias, sampling difficulties, and response fatigue. This design is in consideration of representatives and accuracy by combining innovative sampling methods and a concise survey questions. The goal is to accurately capture voter intentions in those swing states, which play an important role in the US. presidential election because these swing voters are more likely to be persuaded are influenced by both campaign efforts and candidate characteristics [@mayer2007swing]. In the survey, we set a series of screening questions to ensure that only eligible respondents are included in the data set. These questions are aimed at filtering out individuals who do not meet the necessary criteria, such as those under 18, non-U.S. citizens, non-swing-state residents, or people who won't participate in the upcoming election. By implementing these screening questions at the beginning of the survey, we can eliminate ineligible respondents early, which can conserve resources and ensure the quality of the data collected for subsequent questions. 
+
+Besides, for the survey questions, we design them focus on minimizing response burden and improving response quality by using a concise and well-structured questionnaire. Studies indicate that shorter surveys yield higher completion rates and better-quality data, which is essential for accurately capturing voter intentions and influence factors [@rolstad2011response]. Thus, the survey is structured to be completed in under 10 minutes. And, the survey’s structure places voting intention questions first, followed by key demographic and issue-related questions to avoid priming effects, which is consistent with best practices in polling methodology [@roscoe1975follow].
+
+Moreover, the survey includes a range of questions to analyze different influences on voter decisions in the U.S. presidential election. Firstly, the demographic questions such as age, gender, ethnicity, education, and income level provide insight into how population segments may align with certain candidates, allowing for analysis across key groups such as age and regional demographics, which can reveal trends like youth support or regional shifts. Moreover, questions of voter registration history examine respondents' previous voting habits, helping to distinguish between frequent voters and first-time voters, as past engagement can provide some information when predicting current voting intentions. Political affiliation questions assess respondents’ party loyalty or attitudes to other political viewpoints, which is essential for identifying swing voters who might be persuaded by a candidate outside their usual party alignment. And questions of candidate preference and voting intention show respondents' current support for specific candidates and their likelihood of voting, offering a potential turnout, which is crucial for understanding committed versus uncertain voters. And the most important question is to ask respondents to choose some Potential factors that may influence their choice. These different factors are based on different ideas put forward by different candidates [@bbc2024harris_trump_policies]，such as the form of healthcare and education, immigration regulation, climate changing, trade, tax level, and so on, identifying the top concerns that influence voter behavior. These data provide insights into how different factors effect across demographics and influences candidate preference among specific voter groups.
+
+Overall, this appendix provides a well-designed, evidence-based methodology for forecasting the US presidential election, balancing rigorous data collection with practical budgetary considerations. This methodology is not only adaptable for future elections but also emphasizes transparency and reproducible, incorporating proven strategies to ensure high data quality and an accurate, representative electoral forecast.
 
 ### Sampling Approach
+
 #### Target Population
-The survey targets the U.S. voting-age population, defined as U.S. citizens aged 18 and older. The target population includes both already voted voters and those who plan to vote.
+
+This survey targets the U.S. voting-age population, defined as U.S. citizens aged 18 and older who are residence in one of the U.S. swing states. Respondents are either planning to vote in the presidential election or have already vote. By including both likely voters and those who have already voted, the survey captures comprehensive results of voter preferences, covering both the intentions of those yet to vote and the decisions of early voters. This approach ensures that early voting trends, which has an increasingly significant factor in recent elections, are not overlooked, providing opinions to both anticipated and confirmed voting patterns. The survey focuses on likely voters by screening for high voting intention, enhancing data relevance by filtering out those with no intent to participate. Demographic diversity is also considerate, with stratified sampling used to ensure representation across age groups and demographics, from younger voters (18-24) to older adults (65+). Besides, the survey is for residences in swing states, enabling detailed understanding into regional and demographic factors that could influence the election. By including both new and established voters, the survey reflects a range of voting experiences and motivations, capturing the perspectives of first-time voters alongside those with consistent voting patterns. This approach to the target population produces a representative view of the voting-age population, providing a reliable election forecast.
 
 #### Sample Size and Confidence
-As for sample size, a total of 3,000 respondents will be surveyed. This provides a margin of error of ±2% at a 95% confidence level, ensuring reliable predictions at the national level. 
-As for the confidence, the larger the sample size, the smaller the margin of error. Given the $100K budget, this is an optimal balance between cost and statistical reliability.
+
+The survey will target a sample size of 3,000 respondents to achieve a ±2% margin of error at a 95% confidence level, a standard for ensuring robust national-level predictions. This sample size allows the survey to capture a reliable and comprehensive view of voter intentions and preferences within the broader U.S. voting-age population. The ±2% margin of error means that if the survey were conducted multiple times under the same conditions, the observed results would be expected to fall within 2 percentage points of the actual population values 95% of the time. This level of precision enhances the survey’s capacity to detect meaningful differences across voter segments and to anticipate shifts in public opinion with confidence.
+
+With a $100,000 budget, the choice of 3,000 respondents represents an optimal balance between statistical reliability and cost-efficiency, enabling the inclusion of detailed demographic and geographic breakdowns without exceeding budget constraints. This sample size allows for adequate subgroup analysis, enabling examination of various demographics such as age, race, education, income of residences in swing states. For example, the sample allows for comparisons between younger and older voters, urban and rural residents, and high- and low-income voters, each of which may have unique voting behaviors. This granularity in data helps refine election forecasts and captures diverse perspectives within the electorate.
+
+Increasing the sample size beyond 3,000 could further decrease the margin of error, improving precision in subgroup analyses and providing an even more detailed look at specific voter groups. However, larger samples would require additional resources, surpassing the set budget of $100,000. Given these budgetary constraints, a sample of 3,000 respondents provides statistically sound data that can guide reliable election predictions while maintaining cost-effectiveness and broad representative.
 
 #### Stratified Sampling Approach
-To ensure representatives, the sample will be stratified across key demographic factors like their age group, gender, race, education level, job type, income level, house situation, political party, living state and so on. Specifically, for those Swing states (such as Nevada, Arizona, Wisconsin, Michigan, Pennsylvania, North Carolina, and Georgia) will be over-sampled to ensure an accurate prediction in these battleground regions, where small shifts in voter behavior can heavily influence the election outcome. For example, instead of targeting only 8% of the sample in swing states (proportional to the population), we might over-sample to 20%.
+
+To ensure representative, the survey will divide the sample across key demographic factors. Stratifying across these variables allows the survey to more accurately reflect the diversity of the U.S. voting-age population, as each subgroup is proportionally represented. This approach minimizes biases by ensuring that each demographic group, particularly those that might have unique voting behaviors, is included in the sample in accordance with its actual share of the population. For example, by accounting for varying education levels and employment types, the survey can capture distinctions in political preferences that may emerge among blue-collar versus white-collar workers, or those with different levels of formal education.
+
+To implement stratified sampling within swing states, which often experience highly competitive races because small shifts in voter behavior can significantly affect the overall election outcome. The survey divides the sample into key demographic and political subgroups, including age, gender, race, education level, income, and political affiliation. Each subgroup will be represented in proportion to its actual population within each swing state, based on recent census and voter registration data. For example, if 30% of a state’s population is within the 18-24 age range, the sample will ensure that 30% of respondents from that state are also in this group, accurately reflecting voter intentions across age demographics. This proportional approach captures the unique preferences of each demographic, preventing skewed results that might arise if certain age groups were over or underrepresented. Additionally, smaller or historically underrepresented groups, such as certain racial minorities or lower-income populations, may be over sampled to guarantee adequate representation, which is particularly important in areas where shifts in these groups’ voting behaviors could impact state outcomes. Geographic diversity is also addressed, with sampling from urban, suburban, and rural areas within each swing state to capture regional differences in voter preferences. Once data is collected, post-stratification weighting will adjust for any discrepancies, ensuring the final results remain representative of each state’s population. This comprehensive stratification approach allows the survey to capture the full spectrum of voter perspectives across critical swing states, providing an accurate and detailed forecast of voter behavior in these pivotal regions.
 
 #### Bias
-Firstly, relying too much on online survey may skew results towards who are younger and more internet-savvy respondents. To solve this, a portion of the budget will be dedicated to reaching older and rural voters via phone surveys and in person survey. Besides, We will solve non-response bias by offering incentives. 
+
+Over-reliance on online surveys may get bias results toward younger respondents who are more Internet savvy, potentially under representing older and rural voters who are less likely to answer questions online. Similarly, only using mail surveys may also lead to bias. Younger voters and urban residents may be less responsive to mailed invitations because they tend to rely more on digital communication and overlook physical mail, and frequent moves and high mail volume in urban areas can cause invitations being lost or disregarded. This potentially causes the sample skews toward older or more traditional respondents. 
+
+To address these limitations, some portion of the budget will be allocated to reaching diverse demographics through a mix of phone, in-person, and online methods, ensuring a more balanced and inclusive sample. Based on the study, the form of telephone survey will account for a larger proportion because this method attracts more attention and costs less than in person survey and mailing survey [@roscoe1975follow]. Additionally, to mitigate non-response bias across all modes, providing some incentives will be offered to encourage participation from harder-to-reach groups, improving response rates and enhancing data reliability, which also mentioned and proved by [@roscoe1975follow]. 
 
 ### Recruitment Strategy
+
 #### Mixed-Mode Recruitment
-The recruitment strategy uses a mix of recruitment channels to ensure diverse participation across demographic groups.
 
-1. Phone Recruitment (Random Digit Dialing - RDD) or in person survey:
-Budget: $30,000
-Goal: Target older voters, particularly those 65+ and rural populations, who are less likely to respond to online surveys.
-Method: RDD will include both land-lines and mobile numbers to maximize reach, especially among older voters.
-Response Rate: Assuming a 10-15% response rate, we expect to recruit around 1,000 respondents via phone interviews.
+The survey employs a mixed-mode recruitment strategy, integrating online, telephone, messages (SMS), and in-person surveys to maximize demographic and geographic inclusivity. This approach is informed by research showing that mixed-mode sampling can effectively address the limitations of single-mode surveys. Online surveys capture younger respondents, while telephone surveys engage older and rural respondents who may be less inclined to participate online. In-person surveys further enhance reach, particularly among individuals who may be challenging to contact through other methods. With a target sample size of 3,000 respondents, this approach ensures a low margin of error and supports detailed analysis across swing-state regions. The recruitment budget is allocated across four main methods: phone recruitment, online panel recruitment, message invitations, and in-person surveys.
 
-2. Online Panel Recruitment:
-Budget: $40,000
-Goal: Capture younger, more tech-savvy respondents (ages 18-44) and urban populations who are more likely to participate in online surveys.
-Method: Use reputable online panels such as YouGov or Ipsos. These panels provide access to a large pool of respondents pre-screened for voter eligibility.
-Response Rate: With a budget of $20,000, we expect to recruit about 1,500 respondents from these panels.
+Firstly, the recruitment strategy allocates $10,000 to phone recruitment, aiming to reach older voters, particularly those aged 65+ and rural residents who may be less likely to participate online. By including both fixed line and mobile, this method maximizes reach range, with an anticipated response rate of 10-15%. Invitation by making phone call doesn't cost so much budget. 
 
-3. Text-to-Web Invitations (SMS Surveys):
-Budget: $15,000
-Goal: Reach respondents through mobile-friendly surveys, targeting younger voters (18-34) and those who prefer mobile interaction.
-Method: Send SMS invitations with a link to the online survey (via Google Forms), targeting respondents in both urban and rural areas.
-Response Rate: We expect to recruit 500 respondents via SMS links.
+Then, online panel recruitment, with a $36,000 budget, focuses on younger who is around 18-44 years old and urban respondents, which are more likely to engage through digital platforms. Besides, partnering with reputable providers like YouGov ensures access to large, pre-screened pools of eligible voters, with expected recruitment of around 1,000 respondents, consistent with typical online response rates. Although online panel itself doesn't so costly, we allocate the most budget to this method. This is because we need a lot of money to work with reliable and responsible partners. 
+
+Moreover, we allocate $10,000 budget to send invitations by messages method, target mobile-friendly users, especially younger voters (ages 18-34) who prefer quick, mobile access. By linking to an online survey, SMS invitations reach both urban and rural areas and are expected to yield about 500 respondents. Invitation by sending message also doesn't cost so much budget, so we assume that this cost as much as making phone for invitation. 
+
+Finally, in-person surveys are allocated $35,000 to increase inclusivity by engaging voters who may not participate through other method. These surveys are conducted at key locations such as public gatherings and events within swing states, providing access to hard-to-reach demographics, with an anticipated yield of 200-300 respondents. This approach ensures a diverse, representative sample, maximizing inclusivity and minimizing non-response bias. For in-person surveys, there is the high cost due to the need for trained interviewers, travel cost, and logistical assistance. Staffing expenses are also significant, as interviewers must be paid and may work evenings or weekends to reach respondents. Travel and setup costs, including transportation and equipment, increase the expenses, especially when covering multiple locations. Additionally, venue fees or permits for conducting surveys in public areas, as well as administrative support for planning and data management, further increase costs. Despite these highly expenses, in-person surveys are still essential for reaching underrepresented groups, improving inclusivity, and reducing biases in our survey. 
+
+Together, these four recruitment methods allow for a balanced and inclusive sample, minimizing non-response bias and ensuring representation across demographics. This comprehensive strategy strengthens data quality and support a highly accurate forecast of election outcomes.
 
 #### Incentives for Participation
-To improve response rates, we will offer $5 digital gift cards as an incentive to complete the survey.
-Budget: $15,000 for approximately 3,000 respondents.
-This will particularly help increase participation among hard-to-reach groups, such as low-income individuals and rural populations.
+
+To improve response rates, especially among hard-to-reach groups, we will offer 3 dollars digital gift cards as an incentive for survey completion. With a budget of $9,000 allocated for approximately 3,000 respondents, these incentives are designed to encourage participation from groups that may be less likely to respond, such as low-income individuals and rural populations. This approach helps ensure a more inclusive sample by motivating participation across diverse demographics, ultimately enhancing the representative and reliability of the survey data. Providing incentives method is also proved in the [@roscoe1975follow]. 
 
 ### Data Validation
+
 #### Weighting Adjustments
-Post-stratification weighting will be used to adjust the sample to reflect the actual U.S. voting population. This ensures that underrepresented groups (e.g., younger voters, minorities) are appropriately represented in the final analysis. Weights will be calculated based on age, race, gender, education, and some other factors by using Census data as a benchmark.
 
-#### Screening Questions
-The survey will include key screening questions to ensure eligibility:
-
-"Are you a U.S. citizen eligible to vote in the ongoing U.S. presidential election?"
-"Are you at least 18 years old, making you eligible to vote in the ongoing U.S. presidential election?"
-"Have you already voted in the 2024 U.S. presidential election?"
-Respondents who do not meet these criteria will be excluded from the analysis.
+To ensure the reliability of collected data, data validation techniques and post-stratification weighting are employed. Automated screening tools such as CAPTCHA and IP address monitoring protect online surveys from multiple submissions or bot entries. In addition, attention-check questions are incorporated to detect and filter out low-quality responses. Once data collection is complete, results are weighted to reflect known demographic characteristics of the likely voting population, addressing potential biases and aligning results with turnout patterns observed in past elections. This approach draws from the findings of [@kennedy2018evaluation], which underscore the importance of post-stratification adjustments for factors like education level to correct biases noted in recent election cycles.
 
 #### Fraud Detection
-To ensure high-quality responses:
 
-1. Consistency Checks: Use validation questions to ensure the consistency of answers. For example, responses on party affiliation and voting intention will be cross-checked to identify inconsistencies.
-2. Re-contacting: Randomly re-contact a subset of respondents to verify their initial responses.
+To ensure high-quality responses and detect potential fraud, the survey employs several robust techniques. The first technique is consistency checks, which placed validation questions to cross-verify answers. For example, responses regarding party affiliation, voting intention, and specific issue preferences are cross-checked to identify inconsistencies that could indicate inattentive, unreliable, or fraudulent responses. If a respondent’s answers show contradictions such as expressing support for a candidate but having inconsistent party alignment, their response may be flagged for further review.
+
+Additionally, the survey utilizes a re-contacting method to verify data authenticity. A random subset of respondents will be selected for follow-up contact, where they are asked to reconfirm key responses from their original submission. This follow-up can help detect respondents who may have provided random or dishonest answers initially, as they may be unable to accurately repeat their responses. By confirming data accuracy through re-contacting, the survey strengthens the reliability of collected data, minimizing the impact of potential fraudulent responses. overall, these two methods enhance the survey’s overall data integrity and ensure that the results are reliable and high-quality. 
+
 
 \newpage
 
+# Copy of the survey questions
+
+Voter Eligibility and Participation:
+
+1. Are you a U.S. citizen eligible to vote in the ongoing U.S. presidential election? *
+Yes
+No
+
+2. Are you at least 18 years old, making you eligible to vote in the ongoing U.S. presidential election? *
+Yes
+No
+
+3. Do you currently reside in one of the following key U.S. swing states? (The order of the options is in alphabetic order) *
+Arizona
+Georgia
+Michigan
+Nevada
+North Carolina
+Pennsylvania
+Wisconsin
+No, I do not reside in any of these states
+
+4. Have you already voted in the 2024 U.S. presidential election? *
+Yes, I have already voted
+No, but I plan to vote
+No, and I do not plan to vote
+
+Voting Information:
+
+1. Who did you vote for or plan to vote for in the ongoing U.S. presidential election? (The order of the options is in alphabetic order) *
+Donald Trump
+Kamala Harris
+Undecided
+
+2. How did you vote or plan to vote in this election? *
+By mail
+Early voting in person
+Voting in person on Election Day
+Other:
+
+3. What are the most important issues that will influence your vote? (Select up to 7) *
+Private Healthcare
+Public Healthcare
+Strictly control immigration
+Support Legal Immigration
+Reduce Environmental Regulation
+Strengthen Environmental Regulation
+Private Education
+Public Education
+Increasing Tax
+Reducing Tax
+Regulation of Guns
+Support to hold guns
+Anti-abortion Rights
+Pro-abortion Rights
+Other:
+
+4. On a scale of 1 to 5, how motivated were you to vote in the ongoing election? *
+1: Not motivated at all
+2: Somewhat unmotivated
+3: Neutral
+4: Somewhat motivated
+5: Very motivated
+
+5. Have you voted in previous presidential elections? *
+Yes, I voted in the last election (2020)
+Yes, I voted in a previous presidential election but not in 2020
+No, I have never voted in a presidential election
+
+Demographics:
+
+1. What is your age group? *
+18-24
+25-34
+35-44
+45-54
+55-64
+65+
+Prefer not to say
+
+2. What is your gender? *
+Female
+Male
+Non-binary
+Prefer not to say
+Other:
+
+3. What is your race/ethnicity? (The order of the options is in alphabetic order) *
+American Indian or Alaska Native
+Asian
+Black or African American
+Hispanic, Latino or Spanish Origin
+Middle Eastern or North African
+Multiethnic
+Native Hawaiian or other Pacific Islander
+White
+Prefer not to say
+Other:
+
+4. Are you married, widowed, divorced, separated, or never married? *
+Married
+Widowed
+Divorced
+Separated
+Never married
+Prefer not to say
+
+5. What is the highest level of school you have completed or the highest degree you have received? *
+Less than high school degree
+High school degree or equivalent
+Some college but no degree
+Associate degree
+Bachelor degree
+Graduate degree (e.g., Masters, PhD, M.D)
+Prefer not to say
+Other:
+
+6. Which of the following categories best describes your employment status? *
+Employed part time
+Employed full time
+Not employed, looking for work
+Not employed, not looking for work
+Retired
+Disabled, not able to work
+Prefer not to say
+Other:
+
+7. What type of job or industry are you currently working in? (The order of the options is in alphabetic order) *
+Arts, Entertainment, or Media
+Construction or Trades (e.g., carpenter, electrician, plumber)
+Education (e.g., teacher, professor, administrator)
+Finance or Banking
+Government or Public Service
+Healthcare (e.g., doctor, nurse, healthcare assistant)
+Hospitality (e.g., hotel, restaurant, tourism)
+Manufacturing or Production
+Retail or Sales
+Retired
+Self-employed or Freelancer
+Student
+Technology (e.g., IT, software development, engineering)
+Transportation or Logistics (e.g., driver, warehouse, shipping)
+Unemployed
+Prefer not to say
+Other:
+
+8. What is your household income? *
+Under $30,000
+$30,000 - 60,000
+$60,000 - 100,000
+Over $100,000
+Prefer not to say
+
+9. Which of the following describes your current living situation? *
+Own my home
+Rent my home
+Prefer not to say
+Other:
+
+10. How would you describe your political viewpoints? *
+Very liberal
+Slightly liberal
+Moderate
+Slightly conservative
+Very conservative
+Prefer not to say
+
+11. Which political party do you currently identify with? (The order of the options is in alphabetic order) *
+Communist Party
+Constitution Party
+Democratic Party
+Green Party
+Independent Party
+Libertarian Party
+Pirate Party
+Republican Party
+I do not identify with any political party
+Prefer not to say
+Other:
+
+\newpage
 
 # References
