@@ -41,7 +41,7 @@ As a result, this analysis finds that Harris will lead the polls with 48.03% of 
 
 # Data {#sec-data}
 
-To simulate, test, download, clean, and model data throughout this analysis, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `dplyr` [@dplyr],`tinytex` [@tinytex], `ggplot2` [@ggplot2], `knitr` [@knitr], `arrow` [@arrow], `here` [@here], `testthat` [@testthat], and `modelsummary` [@modelsummary]. 
+To simulate, test, download, clean, and model data throughout this analysis, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `tinytex` [@tinytex], `ggplot2` [@ggplot2], `knitr` [@knitr], `arrow` [@arrow], `here` [@here], `testthat` [@testthat], and `modelsummary` [@modelsummary]. 
 
 ## Presidential General Election Polls Data
 
