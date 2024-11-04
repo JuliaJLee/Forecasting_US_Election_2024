@@ -28,42 +28,70 @@ library(here)
 
 # Introduction
 
-*A paragraph for the broader context and motivation for the analysis + the gap that we want to address*
-
-*A paragraph for that details what the analysis aims to do (i.e. its objective) + how*
-
-*A paragraph for what was found and why findings are important (i.e. their implications)*
-
-*A paragraph for setting up the rest of the paper*
 
 # Data {#sec-data}
 
+To simulate, test, download, clean, and model data throughout this analysis, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `dplyr` [@dplyr],`tinytex` [@tinytex], `ggplot2` [@ggplot2], `knitr` [@knitr], `arrow` [@arrow], `here` [@here], and `testthat` [@testthat]. 
+
 ## Presidential General Election Polls Data
 
-*A detailed description of the poll data (e.g. what the data shows, its variables, the date in which the data was downloaded + tables/graphs showing what the data looks like)*
+The present analysis uses Presidential Election Polls data provided by 538 [@datasource]. The data contains records of various pollsters, several aspects of each pollster (e.g. a poll identification number, poll quality characterized by a numeric grade, sample size, etc.), candidates for the presidential election, and the percentage of support (pct) each candidate received based on the polls. Poll results are periodically updated to the 538 website and can be downloaded by users as csv files. The types of pollsters that can be included in the data by 538 are determined by various methodological and ethical standards set by 538 [@policy]. 
 
-To simulate, test, download, and clean the Presidential General Election Polls data, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `dplyr` [@dplyr],`tinytex` [@tinytex], `ggplot2` [@ggplot2], and `knitr` [@knitr]. 
+As the original data acquired by 538 is an extensive dataset, the following will provide details for the variables that are considered within the present analysis. 
 
-(**pollster methodology and idealized methodology sections can be found in the Appendix - @sec-appendix**)
+* **Pollster**: This variable contains the names of polling organizations that conducted each poll (e.g. YouGov, AtlasIntel, Siena, etc.).
+* **Numeric Grade**: This variable reflects the quality or reliability of a pollster. It ranges from 0.5 to 3.0, increasing by 0.1. A larger number indicates a higher-quality pollster. 
+* **Population (pop.)**: This variable represents the voting status of those who respond to a given pollster. Respondents for different pollsters can be likely voters (i.e. voters who are more likely to vote on election day) or registered voters (i.e. everyone who can vote).
+* **State**: Polls can be state-specific (i.e. conducted within a specific state) or they can be national. In the original data, blank values indicate national polls. 
+* **Sample Size**: This variable reflects the total number of respondents for each poll within the data. 
+* **Hypothetical (hypo.)**: Polls can ask respondents about a hypothetical match-up between different candidates. With this, polls that do not consider hypothetical match-ups are denoted as “False” in the data. 
+* **Candidate Name**: This variable contains the names of all the candidates that were asked about in the poll. For this analysis, the presidential candidates, Kamala Harris and Donald Trump, are considered. 
+* **Poll Start and End Dates**: The start and end dates indicate when a poll was launched and when that same poll was closed.
+* **Percentage of Support (pct)**: The percentage of support (pct) reflects the percentage of support a candidate received in a given poll.
 
-## Analysis Data 
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-analysis
+#| tbl-cap: "Organized Presidential General Election Poll Data"
 
-*A detailed description of the clean poll data that was used within the analysis (e.g. what the data shows, why certain variables were chosen + tables/graphs showing what the data looks like)*
+analysis <- read_parquet(here::here("data/02-analysis_data/analysis_data.parquet"))
+
+#view(analysis)
+
+analysis |>
+  slice(1:3) |>
+  kable(
+    col.names = c("Pollster", "Numeric Grade", "State", "Start Date",
+                  "End Date", "Sample Size", "pop.", "hypo.",
+                  "Candidate Name", "pct"),
+    digits = 1,
+    linesep = "",
+    align = c("l", "c", "l", "c", "l", "c", "l", "c", "c", "c")
+  )
+```
+
+@tbl-analysis displays the data that is used throughout the analysis and illustrates each of the variables described above. Summary statistics for these variables can be found in the Appendix (SECTION).
+
+Putting these variables together, the analysis is able to construct a model that forecasts the percentage of support (pct) for Harris and Trump by considering high-quality pollsters, a population of voters who a more likely to vote on election day, polls from various states, poll sample sizes, and the times at which polls were conducted. An in-depth explanation as to why the variables above are selected is provided in (SECTION).
 
 ## An Account on Measurement
 
-*A investigation into how voters' opinions or stances were translated into percentage of votes (i.e. a value) within the data*
+From the day of the week to different survey methods (e.g. email, phone, mail, etc.), there are many things that can influence how voters’ opinions or preferences are shaped and how those opinions are reduced down to a value. The percentage of support (pct) for a candidate is the value that is meant to reflect voters’ opinions on who should be president. As a single percentage is the end result of a survey that was conducted by a pollster, voters’ thoughts and opinions can be translated into an entry in a dataset by considering the ways in which pollsters build their surveys along with how they analyze and interpret the responses. Opinions may be converted into data by calculating average or percentages of responses to closed-ended questions. Preference towards a particular candidate or party could be measured through the coding and counting of themes or key words within responses to open-ended questions. Additionally, how responses are interpreted (e.g. how themes are generated for open-ended responses) can impact how voters’ thoughts are measured. Thus, complex thoughts and opinions can be measured through careful consideration about what is being asked, how it is being asked, and how the responses are interpreted. 
+
+A detailed account about the methodology of a pollster found within the data obtained from 538 along with an idealized methodology and survey can be found in the Appendix (SECTION).
+
 
 # Model 
 
-The objective of the present analysis is to forecast the percentage of support both presidential candidates, Kamala Harris and Donald Trump, will receive in the final week (October 27, 2024 to November 2, 2024) leading up to the election. The Presidential Poll data provided by 538 (CITE) reflects voters’ opinions and preferences about who should be the next President of the United States across time. As those opinions or preferences are subject to change as time goes on, this model seeks to account for this variability by building “seasonal indexes” and using them with a linear model to forecast the percentage of support for both presidential candidates.
+The objective of the present analysis is to forecast the percentage of support both presidential candidates, Kamala Harris and Donald Trump, will receive in the final week (October 27, 2024 to November 2, 2024) leading up to the election. The Presidential Poll data provided by 538 [@datasource] reflects voters’ opinions and preferences about who should be the next President of the United States across time. As those opinions or preferences are subject to change as time goes on, this model seeks to account for this variability by building “seasonal indexes” and using them with a linear model to forecast the percentage of support for both presidential candidates.
 
 In this model, a “season” is referred to as a 7-day week that is found between Sunday August 4, 2024 and Saturday October 26, 2024. The start date is August 4, 2024 because this date allows there to be enough data to observe the percentage of support for both candidates over several weeks. The end date is October 26, 2024 as this leaves roughly a week (October 27, 2024 to November 2, 2024) before the election on Tuesday November 5, 2024 to ensure that a forecast for this final week can be made. 
 
 Further, this model considers the following variables: 
 
 * **Pollsters with a numeric grade of 2.7 and above**: This model uses a cut-off of 2.7 for the numeric grade to strike a balance between the amount of data and the quality of the data. The design of this model requires that there is at least one poll that was conducted in each “season” or week, and this could not have been satisfied if only pollsters with a numeric grade of 3 are considered. A numeric grade of 2.7 and above allows this model to have sufficient data as well as data of high quality. 
-* **The likely voter (lv) population**: Likely voters are defined as voters who show strong intentions to vote on election day (CITE). With this, the model focuses on this particular voter population to generate a forecast that more closely resembles election day.
+* **The likely voter (lv) population**: Likely voters are defined as voters who intend to vote on election day. With this, the model focuses on this particular voter population to generate a forecast that more closely resembles election day.
 * **States**: This model looks at polls that were state-specific rather than national polls. Though each state is not considered individually in this analysis, this model considers these state-specific polls as they also allow for sufficient data to be used within the model.
 * **Sample Size**: Poll sample size is used within the model to pool the poll data for each week within the time period defined by the model above. 
 * **Polls that did not ask about hypothetical match-ups**: As this model aims to forecast and compare support for the presidential candidates in the current 2024 election, hypothetical match-ups are not considered.
