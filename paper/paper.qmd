@@ -408,7 +408,7 @@ Using the seasonal index for Week 1 (0.993) presented in @tbl-seasonal, this mod
 
 The example outcomes provided throughout this section are for Kamala Harris only. It is important to note that the same process is also repeated for Donald Trump within the model.
 
-## Evaluating the Model
+## Evaluating the Model {#sec-evaluation}
 
 By pooling the polls for each of the defined weeks, the model assumes that the polls are unbiased – which is often not the case. While pooling polls that have occurred in a similar time period provides more precision than a single poll, a limitation of this model is that it overlooks the potential biases that can exist within the polls. Biases within polls can arise from their methodology, their audience, and the location in which the poll was conducted. As these variables are not explicitly considered by the model, it would not be appropriate to apply this model to forecast percentage of support as a function of different methodologies, voter populations, or states. 
 
@@ -526,7 +526,7 @@ ggplot(data = final_pooled_both, aes(x = Week)) +
   ) + 
   ylim(40,55) + scale_x_continuous(name = "Week", breaks = seq(1,12,by=1), limits = c(1, 12)) + 
   ggtitle("Percentage of Support For Presidential Candidates Over Time") +
-  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.2)) +
   scale_color_manual(name = "Candidate", values = c("Harris" = "blue", "Trump" = "red"))
 
 ```
@@ -534,6 +534,8 @@ ggplot(data = final_pooled_both, aes(x = Week)) +
 @fig-pctovertime presents the weighted average percentage of support for each presidential candidate over time. While both candidates appear to have had fluctuations in the percentage of support they received, the difference between their percentage of support is smaller in Week 12 than it was at Week 1. In week 1, Trump received an additional 2.39% of support compared to Harris, and in Week 12, his percentage of support was 1.35% higher than Harris'. This pattern further indicates that as support for Trump has dropped, support for Harris has increased over the course of 12 weeks.
 
 ## Predicting the Percentage of Support (pct) for Both Presidential Candidates Over Time
+
+@fig-predictedharris and @fig-predictedtrump provides a comparison of the predicted percentage of support from the linear model and the weighted average percentage of support that was computed with the poll data for Harris and Trump. Though both models do not seem to accurately capture the fluctuations in support each candidate received over time, they do appear to capture the overall increase in support for Harris along with the overall decrease in support for Trump over the 12 weeks. This further gives rise to the idea that while the percentage of support for Trump decreased, the percentage of support for Harris increased as the weeks went by. 
 
 ```{r}
 #| echo: false 
@@ -560,13 +562,12 @@ ggplot(pooled_and_predicted_harris, aes(Week, Predictedpct)) +
   theme_light() +
   labs(x = "Week", y = "Percentage of Support (pct)", 
        title = "Predicted Percentage of Support (pct) for Harris Over Time") +
-  theme(plot.title = element_text(hjust=0.5)) +
+  theme(plot.title = element_text(hjust=0.2)) +
   scale_x_continuous(name = "Week", breaks = seq(1,12,by=1), limits = c(1, 12)) +
   geom_line(aes(y = WeightedAveragepct, colour = "Weighted Average pct")) +
   scale_color_manual(name = "Data", values = c("Weighted Average pct" = "darkgreen"))
   
 ```
-
 
 ```{r}
 #| echo: false 
@@ -593,14 +594,13 @@ ggplot(pooled_and_predicted_trump, aes(Week, Predictedpct)) +
   theme_light() +
   labs(x = "Week", y = "Percentage of Support (pct)", 
        title = "Predicted Percentage of Support (pct) for Trump Over Time") +
-  theme(plot.title = element_text(hjust=0.5)) +
+  theme(plot.title = element_text(hjust=0.2)) +
   scale_x_continuous(name = "Week", breaks = seq(1,12,by=1), limits = c(1, 12)) +
   geom_line(aes(y = WeightedAveragepct, colour = "Weighted Average pct")) +
   scale_color_manual(name = "Data", values = c("Weighted Average pct" = "darkgreen"))
 
 ```
-
-@fig-predictedharris and @fig-predictedtrump provides a comparison of the predicted percentage of support from the linear model and the weighted average percentage of support that was computed with the poll data for Harris and Trump. Though both models do not seem to accurately capture the fluctuations in support each candidate received over time, they do appear to capture the overall increase in support for Harris along with the overall decrease in support for Trump over the 12 weeks. This further gives rise to the idea that while the percentage of support for Trump decreased, the percentage of support for Harris increased as the weeks went by. 
+\newpage
 
 ## Forecasting the Percentage of Support (pct) for Both Presidential Candidates For Week 13
 
@@ -745,8 +745,8 @@ ggplot(data = final_pooled_both, aes(x = Week)) +
     caption = "Data Source: 538"
   ) + 
   ylim(46,50) + scale_x_continuous(name = "Week", breaks = seq(1,13,by=1), limits = c(1, 13)) + 
-  ggtitle("Forecasted Percentages of Support for Harris and Trump in Week 13") +
-  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Forecasted Percentages of Support in Week 13") +
+  theme(plot.title = element_text(hjust = 0.1)) +
   scale_color_manual(name = "Candidate", values = c("Harris" = "blue", "Trump" = "red")) +
   geom_point(aes(x = 13, y = 48.03), colour = "blue", size = 1.5) + 
   geom_point(aes(x = 13, y = 47.98), colour = "red", size = 1.5) 
@@ -763,21 +763,13 @@ With @fig-forecast, it appears as the presidential election will be a tight race
 
 # Discussion {#sec-discussion}
 
-## Summary
+As the 2024 US election approaches, the present analysis forecasts the percentage of support both presidential candidates will receive in the final week leading up to election day on Tuesday November 5, 2024. Through the use of seasonal indexes and a regression model, this analysis takes in to account how voter opinions or preferences change over time to generate more precise forecasts. With this, an understanding of how support for Harris and Trump has changed over time is provided in addition to the model’s forecasts. 
 
-*A paragraph that summarizes what was done in the analysis and a brief overview of the main findings*
+This analysis finds that while support for both Harris and Trump fluctuate over the course of the 12 weeks defined by the model, overall support for Harris appears to increase over time. In contrast, despite having a high percentage of support in Week 1, Trump is found to have received less support in Week 12. This pattern indicates that the percentages of support for Harris and Trump are converging as time goes on, implying that the election will be a tight race that may need to be determined by the swing states. Additionally, the forecasts computed by the model show that Harris will receive greater support than Trump during the week before the election (Week 13). However, as the difference in support that Harris and Trump will receive during this time is extremely small (0.05%), this result also gives rise to the notion that the 2024 election will continue to be a close race until election day. 
 
-## Implications
+As briefly mentioned in @sec-evaluation, a limitation of this analysis is that it assumes that polls are unbiased to pool them together. By not considering the effects of methodology, vote population (e.g. registered voters vs. likely voter), different states, and poll quality, the model may be amplifying the biases of different polls as it pools them together [@journal]. Another limitation of this model is that it considers 12 weeks of data to forecast. Though this is a sufficient amount of data for the model, a stronger representation of the change in candidate support over time as well as more robust forecasts may be produced with a larger quantity of data. 
 
-*A paragraph about what the main findings imply about the election - why they are relevant*
-
-## Limitations
-
-*A paragraph about the limitations of the model - shortcomings due to the decisions that were made in the model*
-
-## Future Directions
-
-*A paragraph about what can be done in the future*
+Given these limitations, moving forward, this analysis should be adapted to incorporate a way to account for variation across polls. With a model that considers the effects of methodology, vote population, states, and poll quality along with seasonal indexes, more precise and less biased estimates of the percentage of support for candidates during a given time period could be made. As the findings of this analysis point to a very close race that can be determined by the swing states, a next step for the model could be to forecast the percentage of support for each candidate within each swing state to present a more detailed prediction of the election. Lastly, it may also be helpful to adopt a more sophisticated method to pool the polls, such as pooling the polls by considering the margin of error of each poll [@journal]. A more enhanced method may allow for better precision, and in turn, provide a more reliable way to forecast.
 
 \newpage
 
