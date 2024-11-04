@@ -72,7 +72,7 @@ analysis |>
   )
 ```
 
-@tbl-analysis displays the data that is used throughout the analysis and illustrates each of the variables described above. Summary statistics for these variables can be found in the Appendix (SECTION).
+@tbl-analysis displays the data that is used throughout the analysis and illustrates each of the variables described above. Summary statistics for these variables can be found in the Appendix (@sec-summary).
 
 Putting these variables together, the analysis is able to construct a model that forecasts the percentage of support (pct) for Harris and Trump by considering high-quality pollsters, a population of voters who a more likely to vote on election day, polls from various states, poll sample sizes, and the times at which polls were conducted. An in-depth explanation as to why the variables above are selected is provided in (SECTION).
 
@@ -83,7 +83,7 @@ From the day of the week to different survey methods (e.g. email, phone, mail, e
 A detailed account about the methodology of a pollster found within the data obtained from 538 along with an idealized methodology and survey can be found in the Appendix (@sec-pollster, @sec-survey).
 
 
-# Model 
+# Model {#sec-model}
 
 The objective of the present analysis is to forecast the percentage of support both presidential candidates, Kamala Harris and Donald Trump, will receive in the final week (October 27, 2024 to November 2, 2024) leading up to the election. The Presidential Poll data provided by 538 [@datasource] reflects voters’ opinions and preferences about who should be the next President of the United States across time. As those opinions or preferences are subject to change as time goes on, this model seeks to account for this variability by building “seasonal indexes” and using them with a linear model to forecast the percentage of support for both presidential candidates.
 
@@ -805,6 +805,39 @@ Given these limitations, moving forward, this analysis should be adapted to inco
 \appendix
 
 # Appendix 
+
+## Analysis Data Summary Statistics {#sec-summary}
+
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-summarystats
+#| tbl-cap: "Presidential General Election Poll Analysis Data Summary Statistics"
+
+sum_stats <- read_parquet(here::here("data/02-analysis_data/analysis_data.parquet"))
+
+#view(sum_stats)
+
+summary_data <- summary(sum_stats[,c(2,6,10)])
+#view(summary_data)
+
+summary_data |>
+    kable(
+    col.names = c("Numeric Grade", "Sample Size", "pct"),
+    digits = 1,
+    booktabs = TRUE,
+    linesep = "",
+    align = c("l", "c", "l"),
+    format.args = list(big.mark = ",")
+  )
+
+```
+
+@tbl-summarystats presents the summary statistics for the variables, "Numeric Grade", "Sample Size", and "pct". As the variables "Pollster", "State", "Start Date", "End Date", "Population", "Hypothetical", and "Candidate Name" are classfied as a "character" data type, they are not included in the summary above.
+
+## Model Validation {#sec-validation}
+
+
 
 ## Pollster Methodology {#sec-pollster}
 
