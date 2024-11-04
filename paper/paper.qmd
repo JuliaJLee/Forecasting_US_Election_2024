@@ -1,5 +1,6 @@
 ---
-title: "Forecasting the 2024 US Presidential Election"
+title: "Forecasting Presidential Candidate Support during the Final Week before Election Day"
+subtitle: "In the final week leading up to the 2024 US election, Kamala Harris is expected to lead the polls with 48.03% of support with Donald Trump following close behind with 47.98% of support."
 author: 
   - Tianning He
   - Julia Lee
@@ -24,6 +25,7 @@ library(ggplot2)
 library(dplyr)
 library(arrow)
 library(here)
+library(modelsummary)
 ```
 
 # Introduction
@@ -74,7 +76,7 @@ analysis |>
 
 @tbl-analysis displays the data that is used throughout the analysis and illustrates each of the variables described above. Summary statistics for these variables can be found in the Appendix (@sec-summary).
 
-Putting these variables together, the analysis is able to construct a model that forecasts the percentage of support (pct) for Harris and Trump by considering high-quality pollsters, a population of voters who a more likely to vote on election day, polls from various states, poll sample sizes, and the times at which polls were conducted. An in-depth explanation as to why the variables above are selected is provided in (SECTION).
+Putting these variables together, the analysis is able to construct a model that forecasts the percentage of support (pct) for Harris and Trump by considering high-quality pollsters, a population of voters who a more likely to vote on election day, polls from various states, poll sample sizes, and the times at which polls were conducted. An in-depth explanation as to why the variables above are selected is provided in (@sec-model).
 
 ## An Account on Measurement
 
@@ -345,7 +347,7 @@ where
 
 -   $\epsilon_i$ captures the error within the linear models
 
-Summary outputs for each model (one for Harris and another for Trump) along with model diagnostics to validate these models can be found in the Appendix (SECTION). 
+Summary outputs for each model (one for Harris and another for Trump) along with model diagnostics to validate these models can be found in the Appendix (@sec-validation). 
 
 ### Step 4: Find Seasonal (i.e. weekly) Indexes to Forecast Support for Harris and Trump
 
@@ -782,7 +784,7 @@ ggplot(data = final_pooled_both, aes(x = Week)) +
 
 ```
 
-With @fig-forecast, it appears as the presidential election will be a tight race as the forecasts of percentage of support for Harris and Trump in Week 13 are very similar. In the final week leading up to the election (October 27, 2024 to November 2, 2024), Harris is expected to receive more support while Trump is expected to receive less support in Week 13. The exact forecasts of the model are as follows:
+@fig-forecast shows two additional points (one for Harris and the other for Trump), and these points represent the forecasted percentage of support for each candidate in Week 13. With this, it appears as though the presidential election will be a tight race as the forecasts of percentage of support for Harris and Trump in Week 13 are very similar. In the final week leading up to the election (October 27, 2024 to November 2, 2024), Harris is expected to receive more support while Trump is expected to receive less support in Week 13. The exact forecasts of the model are as follows:
 
 * This model forecasts that the percentage of support for Harris in the week leading up to the election will be 48.03%.
 * On the other hand, the model forecasts that the percentage of support for Trump in the week leading up to the election will be 47.98%.
@@ -837,7 +839,135 @@ summary_data |>
 
 ## Model Validation {#sec-validation}
 
+### Model for Harris
 
+@tbl-harris shows the summary output of the linear model that predicts the percentage of support for Harris across weeks.
+The low AIC, BIC, and RMSE values ensure that this model fits the data well. Here, the low R² value indicates that the time variable, "Week", does not explain much of the variability of pct for Harris.
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: tbl-harris
+#| tbl-cap: "Summary Table of the Regression Results for Harris"
+
+model <- readRDS(here("models/harris_model.rds"))
+
+modelsummary(harris_model)
+
+```
+
+Looking  at the Residuals vs. Predictor, Residuals vs. Fitted Values, and Normal Q-Q plots with @fig-residualspred, @fig-residualsfit, and @fig-normal, there are no systematic patters (e.g. fanning) and the residuals appear to follow a normal distribution with little deviation from the QQ-line in the Q-Q plot. This suggests that the assumptions of linearity, homoscedasticity, independence, and normality are satisfied by this model. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-residualspred
+#| fig-cap: Showing the Residual vs. Predictor Plot of the Linear Model for Harris
+
+## Residual Plots & Normal Q-Q Plot
+
+### Find residuals
+
+residuals <- harris_model$residuals
+
+### Residuals vs. Predictor
+
+plot(residuals ~ final_pooled_polls_harris$Week, main = "Residuals vs. Week", xlab = "Week", ylab = "Residuals")
+```
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-residualsfit
+#| fig-cap: Showing the Residual vs. Fitted Values Plot of the Linear Model for Harris
+
+### Residuals vs. Fitted Values
+
+fitted_values <- harris_model$fitted.values
+
+plot(residuals ~ fitted_values, main = "Residuals vs. Fitted Values", xlab = "Fitted Values", ylab = "Residuals")
+```
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-normal
+#| fig-cap: Showing the Normal Q-Q Plot of the Linear Model for Harris
+
+### Normal Q-Q Plot
+
+qqnorm(residuals)
+qqline(residuals)
+```
+
+\newpage
+
+
+### Model for Trump
+
+@tbl-trump shows the summary output of the linear model that predicts the percentage of support for Trump across weeks.
+Similar to @tbl-harris, the model fits the data well and can provide more precise predictions as indicated by the low AIC, BIC, and RMSE values. The R² value is low for this model as well, implying that the time variable, "Week", does not explain much of the variability of pct for Trump. 
+
+```{r}
+#| warning: false
+#| echo: false
+#| label: tbl-trump
+#| tbl-cap: "Summary Table of the Regression Results for Trump"
+
+model <- readRDS(here("models/trump_model.rds"))
+
+modelsummary(trump_model)
+
+```
+
+Residual plots and a Normal Q-Q plot for this linear model are provided with @fig-trumprespred, @fig-trumpresfit, and @fig-trumpnormal. As there are no observable patterns within the residual plots (e.g. fanning) and the residuals closely follow the QQ-line in the Q-Q plot, this implies that the assumptions of linearity, homoscedasticity, independence, and normality are also satisfied by this model. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-trumprespred
+#| fig-cap: Showing the Residuals vs. Predictor Plot of the Linear Model for Trump
+
+## Residual Plots & Normal Q-Q Plot
+
+### Find residuals
+
+residuals <- trump_model$residuals
+
+### Residuals vs. Predictor
+
+plot(residuals ~ final_pooled_polls_trump$Week, main = "Residuals vs. Week", xlab = "Week", ylab = "Residuals")
+```
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-trumpresfit
+#| fig-cap: Showing the Residuals vs. Fitted Values Plot of the Linear Model for Trump
+
+### Residuals vs. Fitted Values
+
+fitted_values <- trump_model$fitted.values
+
+plot(residuals ~ fitted_values, main = "Residuals vs. Fitted Values", xlab = "Fitted Values", ylab = "Residuals")
+```
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-trumpnormal
+#| fig-cap: Showing the Normal Q-Q Plot of the Linear Model for Trump
+
+### Normal Q-Q Plot
+
+qqnorm(residuals)
+qqline(residuals)
+```
+
+
+\newpage
 
 ## Pollster Methodology {#sec-pollster}
 
