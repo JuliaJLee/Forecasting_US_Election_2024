@@ -75,7 +75,7 @@ Further, this model considers the following variables:
 
 *Code that runs through the following steps can be found in the repository linked on page 1.*
 
-### Organize Poll Data for each Candidate by Week 
+### Step 1: Organize Poll Data for each Candidate by Week 
 
 For this model, a total of 12 weeks of poll data is analyzed. The exact start and end dates of each week (defined by the model) can be found below in @tbl-weeks. Every four weeks corresponds to a month. The first four weeks are in August 2024, the next four weeks are in September 2024, and the last four weeks are in October 2024. 
 
@@ -192,6 +192,223 @@ harris_by_week |>
 
 Each row in the outcome above (@tbl-organizingbyweek) represents a poll, and the “Week” column indicates the week in which that poll occurred. For example, the first four rows show polls that were conducted in the week of August 4 to 10, 2024. The last two rows show polls that occurred between August 11 to 17, 2024 (i.e. Week 2). Each poll’s sample size and pct estimate are also included.
 
+### Step 2: Pool Poll Data by Week for both Candidates {#sec-step2}
+
+With polls organized by week, the model now pools all the polls that occurred within a single week to generate a weighted average estimate of pct for that week. 
+
+To pool the polls for each week, this model first creates a weight for each poll by: 
+
+* (1) Finding the sum of the sample sizes of all polls in a given week 
+* (2) Dividing each sample size of each poll within that week by the sum found in the previous step
+
+An example of these two steps would be to find the sum of the first four sample sizes for week 1 in @tbl-organizingbyweek, and then divide 1000, 619, 661, and 693 from the first four rows of @tbl-organizingbyweek by the sum of the first four sample sizes.
+
+Next, each weight for each poll within a given week is multiplied to the corresponding pct estimate. For example, by using @tbl-organizingbyweek, the model would multiply the quotient of (1000/sum of sample sizes) by 42.5, which is the pct estimate that corresponds to the poll with a sample size of 1000 in row 1 of @tbl-organizingbyweek. 
+
+Lastly, by taking the sum of the products of each weight and the corresponding pct estimate, the model produces a weighted average pct estimate for each week. An example outcome is shown below for Kamala Harris (@tbl-weightforweek).
+
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-weightforweek
+#| tbl-cap: "Weighted Average Percentage of Support for Harris By Week" 
+
+# Pooling polls for HARRIS
+
+pooled_polls_harris <- tibble(
+  week_1 = round(sum(harris_by_week[1:4,]$pct * (harris_by_week[1:4,]$sample_size / 
+                                                   sum(harris_by_week[1:4,]$sample_size))),2),
+  week_2 = round(sum(harris_by_week[5:11,]$pct * (harris_by_week[5:11,]$sample_size / 
+                                             sum(harris_by_week[5:11,]$sample_size))),2),
+  week_3 = round(sum(harris_by_week[12,]$pct * (harris_by_week[12,]$sample_size / 
+                                             sum(harris_by_week[12,]$sample_size))),2),
+  week_4 = round(sum(harris_by_week[13:25,]$pct * (harris_by_week[13:25,]$sample_size / 
+                                             sum(harris_by_week[13:25,]$sample_size))),2),
+  week_5 = round(sum(harris_by_week[26:40,]$pct * (harris_by_week[26:40,]$sample_size / 
+                                               sum(harris_by_week[26:40,]$sample_size))),2),
+  week_6 = round(sum(harris_by_week[41:45,]$pct * (harris_by_week[41:45,]$sample_size / 
+                                               sum(harris_by_week[41:45,]$sample_size))),2),
+  week_7 = round(sum(harris_by_week[46:81,]$pct * (harris_by_week[46:81,]$sample_size / 
+                                               sum(harris_by_week[46:81,]$sample_size))),2),
+  week_8 = round(sum(harris_by_week[82:130,]$pct * (harris_by_week[82:130,]$sample_size / 
+                                               sum(harris_by_week[82:130,]$sample_size))),2),
+  week_9 = round(sum(harris_by_week[131:136,]$pct * (harris_by_week[131:136,]$sample_size / 
+                                               sum(harris_by_week[131:136,]$sample_size))),2),
+  week_10 = round(sum(harris_by_week[137:162,]$pct * (harris_by_week[137:162,]$sample_size / 
+                                                sum(harris_by_week[137:162,]$sample_size))),2),
+  week_11 = round(sum(harris_by_week[163:197,]$pct * (harris_by_week[163:197,]$sample_size / 
+                                                sum(harris_by_week[163:197,]$sample_size))),2), 
+  week_12 = round(sum(harris_by_week[198:240,]$pct * (harris_by_week[198:240,]$sample_size / 
+                                                sum(harris_by_week[198:240,]$sample_size))),2)
+)
+
+#view(pooled_polls_harris)
+
+## Flipping the dataframe to have week as one column and the weighted average pct 
+## for each week in another column
+
+## The following code (line 182) was provided by a Stack Overflow answer 
+## (link: https://stackoverflow.com/questions/28680994/converting-rows-into-columns-and-columns-into-rows-using-r)
+
+final_pooled_polls_harris <- as.data.frame(t(pooled_polls_harris))
+
+#view(final_pooled_polls_harris)
+
+#colnames(final_pooled_polls_harris)
+#row.names(final_pooled_polls_harris)
+
+## Renaming the weighted avg. pct column 
+
+final_pooled_polls_harris <-
+  final_pooled_polls_harris |>
+  rename(
+    "WeightedAveragepct" = V1)
+
+## Adding another column for each week 
+
+final_pooled_polls_harris$Week <- c(1:12)
+
+## Bringing "Week" column to the front
+
+final_pooled_polls_harris <- final_pooled_polls_harris %>% relocate(Week)
+
+## Changing row names to just be numbers 1 through 12
+
+rownames(final_pooled_polls_harris) <- c(1:12)
+
+#view(final_pooled_polls_harris)
+
+final_pooled_polls_harris |>
+  slice(1:4) |>
+  kable(
+    col.names = c("Week", "Weighted Average Percentage of Support (pct)"),
+    digits = 1,
+    booktabs = TRUE,
+    linesep = "",
+    align = c("c", "c"),
+    format.args = list(big.mark = ",")
+  )
+
+```
+
+@tbl-weightforweek shows the average percentage of support that Harris received in the first four weeks. For instance, in Week 1 (i.e. during the week of August 4 to 10, 2024), Harris received an average support of 47.5% across the polls that occurred in within this time period.
+
+### Step 3: Fit a Regression Model for Each Candidate using the Pooled Poll Data
+
+Using the weighted average percentage of support (pct) for each week as the response variable, the model performs two regression analyses to predict the support for each candidate during each of the 12 weeks. The linear models are structured as follows: 
+
+$$
+\hat{y_i} = b_0 + b_1 \cdot w_i + \epsilon_i
+$$
+where
+
+-   $\hat{y_i}$ represents the percentage of support (for Harris or Trump),
+
+-   $b_0$ represents the intercept of the linear models,
+
+-   $b_1$ represents the effect of each week,
+
+-   $w_i$ represents the time period of a week (i = 1, 2,…, 12)
+
+-   $\epsilon_i$ captures the error within the linear models
+
+Summary outputs for each model (one for Harris and another for Trump) along with model diagnostics to validate these models can be found in the Appendix (SECTION). 
+
+### Step 4: Find Seasonal (i.e. weekly) Indexes to Forecast Support for Harris and Trump
+
+With the linear models fitted above, the model now creates a “seasonal” or weekly index for each week so that the week leading up to the election can be predicted while accounting for differences in voter opinions across different time periods. 
+
+A seasonal index for each week is calculated by first computing the ratio, 
+$$
+ \frac{y}{\hat{y_i}}
+$$. 
+
+For each week, the model takes the weighted average percentage of support (pct) that was found in Step 2 (@sec-step2) and divides it by the predicted value that is found using the linear model. This produces an outcome like the following in @tbl-ratios. 
+
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-ratios
+#| tbl-cap: "Ratios for Each Week"
+
+# Regression model: HARRIS
+
+harris_model <- lm(formula = WeightedAveragepct ~ Week, data = final_pooled_polls_harris)
+
+pooled_and_predicted_harris <- final_pooled_polls_harris
+
+pooled_and_predicted_harris$Predictedpct <- round(predict(harris_model), 2)
+
+pooled_and_predicted_harris$Ratio <- round((pooled_and_predicted_harris$WeightedAveragepct / 
+                                        pooled_and_predicted_harris$Predictedpct), 3)
+
+#view(pooled_and_predicted_harris)
+
+pooled_and_predicted_harris |>
+  slice(1:4) |>
+  kable(
+    col.names = c("Week", "Weighted Average Percentage of Support (pct)", 
+                  "Predicted Average Percent of Support (pct)", "Ratio"),
+    digits = 3,
+    booktabs = TRUE,
+    linesep = "",
+    align = c("c", "c", "c", "c"),
+    format.args = list(big.mark = ",")
+  )
+```
+
+Now, the since the data is manipulated such that every four weeks corresponds to a month (August, September, and October), it follows that the final week (October 27, 2024 to November 2, 2024) that this model aims to forecast is Week 13 and the first week of the next month, November. So, this model computes the average of the ratios for the first, second, third, and fourth weeks across each month to obtain a "seasonal" or weekly index that can be used to forecast Week 13. An example outcome is shown below @tbl-seasonal. 
+
+```{r}
+#| echo: false
+#| message: false
+#| label: tbl-seasonal
+#| tbl-cap: "Seasonal (Weekly) Index for Each Week Across 3 Months"
+
+## For HARRIS
+
+ratios_harris <- tibble(
+  Month = c("August 2024", "September 2024", "October 2024"),
+  Week_1 = pooled_and_predicted_harris[c(1,5,9),]$Ratio,
+  Week_2 = pooled_and_predicted_harris[c(2,6,10),]$Ratio,
+  Week_3 = pooled_and_predicted_harris[c(3,7,11),]$Ratio,
+  Week_4 = pooled_and_predicted_harris[c(4,8,12),]$Ratio
+)
+
+#view(ratios_harris)
+
+seasonal_index_harris <- tibble(
+  Week_1_Index = round(((sum(pooled_and_predicted_harris[c(1,5,9),]$Ratio)) / 3), 3),
+  Week_2_Index = round(((sum(pooled_and_predicted_harris[c(2,6,10),]$Ratio)) / 3), 3),
+  Week_3_Index = round(((sum(pooled_and_predicted_harris[c(3,7,11),]$Ratio)) / 3), 3),
+  Week_4_Index = round(((sum(pooled_and_predicted_harris[c(4,8,12),]$Ratio)) / 3), 3),
+)
+
+#view(seasonal_index_harris)
+
+seasonal_index_harris |>
+  kable(
+    col.names = c("Week 1", "Week 2", "Week 3", "Week 4"),
+    digits = 3,
+    booktabs = TRUE,
+    linesep = "",
+    align = c("c", "c", "c", "c"),
+    format.args = list(big.mark = ",")
+  )
+```
+
+Using the seasonal index for Week 1 (0.993) presented in @tbl-seasonal, this model can forecast the percentage of support that Harris will receive in Week 13 by:
+
+* (1) Plugging in $w$ = 13 to the linear model for Harris to predict her percentage of support
+* (2) Multiplying the predicted value from the linear model by the seasonal index
+
+The example outcomes provided throughout this section are for Kamala Harris only. It is important to note that the same process is also repeated for Donald Trump within the model.
+
+## Evaluating the Model
+
+By pooling the polls for each of the defined weeks, the model assumes that the polls are unbiased – which is often not the case. While pooling polls that have occurred in a similar time period provides more precision than a single poll, a limitation of this model is that it overlooks the potential biases that can exist within the polls. Biases within polls can arise from their methodology, their audience, and the location in which the poll was conducted. As these variables are not explicitly considered by the model, it would not be appropriate to apply this model to forecast percentage of support as a function of different methodologies, voter populations, or states. 
+
+Despite these limitations, this model’s strength lies in its ability to account for variations across time. This approach of using seasonal indexes and regression to forecast the percentage of support (pct) for both presidential candidates is able to capture seasonal (i.e. weekly) variation within the percentage of support candidates received and assess long-term trends. As such, this model can provide both a numerical outcome (i.e. a forecasted percentage of support) for each candidate along with a means to observe how the percentage of support for the presidential candidates has changed over time. As these strengths align with the objective of the analysis to forecast the percentage of support the presidential candidates will receive in the final week (October 27, 2024 to November 2, 2024) leading up to the election, this model is employed to obtain the findings presented in the next section (@sec-results). 
 
 # Results {#sec-results}
 
