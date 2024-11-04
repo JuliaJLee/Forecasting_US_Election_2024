@@ -1,6 +1,6 @@
 ---
 title: "Forecasting Presidential Candidate Support during the Final Week before Election Day"
-subtitle: "In the final week leading up to the 2024 US election, Kamala Harris is expected to lead the polls with 48.03% of support with Donald Trump following close behind with 47.98% of support."
+subtitle: "In the final week before the election, Harris is expected to lead the polls with 48.03% of support with Trump following close behind with 47.98% of support."
 author: 
   - Tianning He
   - Julia Lee
@@ -8,6 +8,7 @@ author:
 thanks: "Code and data are available at: https://github.com/JuliaJLee/Forecasting_US_Election_2024.git"
 date: today
 date-format: long
+abstract: "With the Presidential General Election Polls data provided by 538, the present analysis builds a model to forecast the percentage of support Harris and Trump will receive during the week before election day. By pooling poll data by week through the use of seasonal indexes and a linear model, this analysis forecasts that prior to election day, Harris will receive 48.03% of support and Trump will receive 47.98% of support from the polls. This suggests that the election will be a very tight race that may come down to the outcomes of the swing states. Through this, this analysis further examines the impacts of pooling poll data and discusses how improvements may be made to its model."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -28,13 +29,19 @@ library(here)
 library(modelsummary)
 ```
 
-# Introduction
+# Introduction {#sec-page1}
 
+The recent US presidential election has been a hot topic of discussion, and as the election approaches, speculation about the final outcome has begun. Accurately predicting the outcome has become a focus of attention for political analysts, the media, and the public. Polling organizations such as YouGov have conducted surveys that provide a deeper look into voters' intentions and preferences, which can help to forecast potential election results. However, people’s intentions, preferences, and opinions can be influenced by different social contexts [@intro], meaning that voters’ opinions on who should be the next president of their country can change over time.
 
+With this, the objective of the present analysis is to build a model that forecasts the percentage of support Kamala Harris and Donald Trump will receive in the final week before the election, while accounting for variations across time. The opinions and preferences of voters’ are what this analysis is interested in. By using seasonal indexes along with a regression model, this analysis seeks to measure and approximate voters’ opinions to generate more precise forecasts that reflect their preferences. 
+
+This analysis first aims to understand how the percentage of support for both candidates has changed over time along with how the percentage of support for one candidate has changed relative to the other. Then, as a means to observe how the model affects the data, this analysis examines how the percentages of support predicted by the linear model compare to the weighted averages over time. Finally, the model is used to predict the percentage of support Harris and Trump will receive in the final week before the election. Additionally, this analysis considers the accuracy of the linear model's predictions and investigates the impact of the “pooling polls” method on election predictions. This provides a deeper awareness of how the complexity that surrounds having an opinion can be translated into data that ultimately predicts real-world election results. 
+
+As a result, this analysis finds that Harris will lead the polls with 48.03% of support with Trump close behind with 47.98% of support, suggesting that this election will be a tight race that may need to be determined by the outcomes of the swing states. These findings further highlight important considerations for how to improve the ways in which poll data is interpreted and different prediction methods for future elections. The following expands on the ideas above by presenting a description of the poll data for this analysis (@sec-data), a more in-depth explanation of model and how it is used (@sec-model), an overview of the results (@sec-results), and a discussion of the overall analysis (@sec-discussion). 
 
 # Data {#sec-data}
 
-To simulate, test, download, clean, and model data throughout this analysis, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `dplyr` [@dplyr],`tinytex` [@tinytex], `ggplot2` [@ggplot2], `knitr` [@knitr], `arrow` [@arrow], `here` [@here], and `testthat` [@testthat]. 
+To simulate, test, download, clean, and model data throughout this analysis, the statistical programming language R was used [@citeR]. Specific libraries that assisted the analysis include `tidyverse` [@tidyverse], `dplyr` [@dplyr],`tinytex` [@tinytex], `ggplot2` [@ggplot2], `knitr` [@knitr], `arrow` [@arrow], `here` [@here], `testthat` [@testthat], and `modelsummary` [@modelsummary]. 
 
 ## Presidential General Election Polls Data
 
@@ -104,7 +111,7 @@ Further, this model considers the following variables:
 
 ## Model Process 
 
-*Code that runs through the following steps can be found in the repository linked on page 1.*
+Code that runs through the following steps can be found in the repository linked on page 1 (@sec-page1).
 
 ### Step 1: Organize Poll Data for each Candidate by Week 
 
@@ -784,6 +791,9 @@ ggplot(data = final_pooled_both, aes(x = Week)) +
 
 ```
 
+\newpage
+
+
 @fig-forecast shows two additional points (one for Harris and the other for Trump), and these points represent the forecasted percentage of support for each candidate in Week 13. With this, it appears as though the presidential election will be a tight race as the forecasts of percentage of support for Harris and Trump in Week 13 are very similar. In the final week leading up to the election (October 27, 2024 to November 2, 2024), Harris is expected to receive more support while Trump is expected to receive less support in Week 13. The exact forecasts of the model are as follows:
 
 * This model forecasts that the percentage of support for Harris in the week leading up to the election will be 48.03%.
@@ -983,6 +993,8 @@ Further, YouGov's questionnaire is answered online, which can quickly obtain a l
 
 Survey Form Link: https://forms.gle/S4cyiZNej46zfxq29
 
+A copy of the survey questions can be found in @sec-copy.
+
 ### Introduction
 
 This appendix presents an idealized methodology for forecasting the upcoming US. presidential election within a hypothetical $100,000 budget, minimizing challenges such as non-response bias, sampling difficulties, and response fatigue. This design is in consideration of representatives and accuracy by combining innovative sampling methods and a concise survey questions. The goal is to accurately capture voter intentions in those swing states, which play an important role in the US. presidential election because these swing voters are more likely to be persuaded are influenced by both campaign efforts and candidate characteristics [@mayer2007swing]. In the survey, we set a series of screening questions to ensure that only eligible respondents are included in the data set. These questions are aimed at filtering out individuals who do not meet the necessary criteria, such as those under 18, non-U.S. citizens, non-swing-state residents, or people who won't participate in the upcoming election. By implementing these screening questions at the beginning of the survey, we can eliminate ineligible respondents early, which can conserve resources and ensure the quality of the data collected for subsequent questions. 
@@ -1054,7 +1066,7 @@ Additionally, the survey utilizes a re-contacting method to verify data authenti
 
 \newpage
 
-## Copy of the survey questions
+## Copy of the survey questions {#sec-copy}
 
 Voter Eligibility and Participation:
 
