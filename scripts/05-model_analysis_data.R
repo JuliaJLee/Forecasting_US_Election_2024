@@ -14,6 +14,7 @@ library(tidyverse)
 library(testthat)
 library(arrow)
 library(here)
+library(dplyr)
 
 # Read in the cleaned analysis data
 
@@ -362,11 +363,126 @@ qqline(residuals)
 # up to the election (week 13) can be predicted while accounting for differences in voter opinions across 
 # different time periods
 
-# Categorize weeks into three groups - one for each month (August, September, and October)
-# Each month should have 4 weeks 
+# Adding predicted values for weeks 1 to 12 using the linear model as a new column next to the weighted 
+# average pct and adding a column for a ratio for each week
+
+
+## For HARRIS 
+
+pooled_and_predicted_harris <- final_pooled_polls_harris
+
+pooled_and_predicted_harris$Predictedpct <- round(predict(harris_model), 2)
+
+pooled_and_predicted_harris$Ratio <- round((pooled_and_predicted_harris$WeightedAveragepct / 
+                                        pooled_and_predicted_harris$Predictedpct), 3)
+
+#view(pooled_and_predicted_harris)
+
+
+## For TRUMP 
+
+pooled_and_predicted_trump <- final_pooled_polls_trump
+
+pooled_and_predicted_trump$Predictedpct <- round(predict(trump_model), 2)
+
+pooled_and_predicted_trump$Ratio <- round((pooled_and_predicted_trump$WeightedAveragepct / 
+                                              pooled_and_predicted_trump$Predictedpct), 3)
+
+#view(pooled_and_predicted_trump)
+
+# Now since the data was manipulated so that every four weeks corresponds to a month (August, 
+# September, and October), and as week 13 is the first week of November in the model, need to 
+# find the seasonal index (i.e. average ratio) for the first week across each month to be able 
+# to forecast it
+
 
 ## For HARRIS
 
-by_month_harris <- final_pooled_polls_harris |>
-  mutate(month = lubridate::floor_date(week_start = 7, "4 weeks")) %>%
-  group_by(month) 
+ratios_harris <- tibble(
+  Month = c("August 2024", "September 2024", "October 2024"),
+  Week_1 = pooled_and_predicted_harris[c(1,5,9),]$Ratio,
+  Week_2 = pooled_and_predicted_harris[c(2,6,10),]$Ratio,
+  Week_3 = pooled_and_predicted_harris[c(3,7,11),]$Ratio,
+  Week_4 = pooled_and_predicted_harris[c(4,8,12),]$Ratio
+)
+
+#view(ratios_harris)
+
+seasonal_index_harris <- tibble(
+  Week_1_Index = round(((sum(pooled_and_predicted_harris[c(1,5,9),]$Ratio)) / 3), 3),
+  Week_2_Index = round(((sum(pooled_and_predicted_harris[c(2,6,10),]$Ratio)) / 3), 3),
+  Week_3_Index = round(((sum(pooled_and_predicted_harris[c(3,7,11),]$Ratio)) / 3), 3),
+  Week_4_Index = round(((sum(pooled_and_predicted_harris[c(4,8,12),]$Ratio)) / 3), 3),
+)
+
+#view(seasonal_index_harris)
+
+
+## For TRUMP
+
+ratios_trump <- tibble(
+  Month = c("August 2024", "September 2024", "October 2024"),
+  Week_1 = pooled_and_predicted_trump[c(1,5,9),]$Ratio,
+  Week_2 = pooled_and_predicted_trump[c(2,6,10),]$Ratio,
+  Week_3 = pooled_and_predicted_trump[c(3,7,11),]$Ratio,
+  Week_4 = pooled_and_predicted_trump[c(4,8,12),]$Ratio
+)
+
+#view(ratios_trump)
+
+seasonal_index_trump <- tibble(
+  Week_1_Index = round(((sum(pooled_and_predicted_trump[c(1,5,9),]$Ratio)) / 3), 3),
+  Week_2_Index = round(((sum(pooled_and_predicted_trump[c(2,6,10),]$Ratio)) / 3), 3),
+  Week_3_Index = round(((sum(pooled_and_predicted_trump[c(3,7,11),]$Ratio)) / 3), 3),
+  Week_4_Index = round(((sum(pooled_and_predicted_trump[c(4,8,12),]$Ratio)) / 3), 3),
+)
+
+#view(seasonal_index_trump)
+
+------------------------------------------------------------------------------------------------------
+
+#### Forecasting Harris and Trump support in week 13 ####
+
+# Now can use linear model and index to forecast the percentage of support each candidate 
+# will have in week 13 (i.e. the week leading up to the election)
+
+## For HARRIS
+
+### Predicting pct for week 13 using linear model
+
+new_point = data.frame(Week = 13)
+
+prediction = predict(harris_model, newdata = new_point)
+
+#prediction
+
+### Multiplying the predicted value by the seasonal index for week 1
+### Get the seasonal index for week 1
+
+forecasted_pct = prediction * (seasonal_index_harris[1,1])
+
+forecasted_pct
+
+#### Therefore, forecast that the percentage of support for Harris in the week leading up to 
+#### the election will be 48.03%.
+
+
+## For TRUMP
+
+### Predicting pct for week 13 using linear model
+
+new_point = data.frame(Week = 13)
+
+prediction = predict(trump_model, newdata = new_point)
+
+#prediction
+
+### Multiplying the predicted value by the seasonal index for week 1
+### Get the seasonal index for week 1
+
+forecasted_pct = prediction * (seasonal_index_trump[1,1])
+
+forecasted_pct
+
+#### Therefore, forecast that the percentage of support for Trump in the week leading up to 
+#### the election will be 47.98%.
